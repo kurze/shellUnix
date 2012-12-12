@@ -4,6 +4,7 @@
 #include <pwd.h>
 
 #include "shell_fct.h"
+#include "constante.h"
  
 
 int main(int argc, char** argv)
