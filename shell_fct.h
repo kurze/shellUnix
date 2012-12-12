@@ -1,5 +1,5 @@
 #ifndef SHELL_FCT_H
-#define SHELL_FEC_H
+#define SHELL_FCT_H
 
 #include <unistd.h>
 #include <sys/wait.h>
