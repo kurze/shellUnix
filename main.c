@@ -36,7 +36,6 @@ int main(int argc, char** argv)
 		//.......... 
 
 		free(readlineptr);
-		free_membres(&mycmd);
 		//..........
 		
 	}
