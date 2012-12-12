@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 		readlineptr = readline(str);
 
 		//..........
-		//..........parse_membres(readlineptr, &mycmd); 
+		parse_membres(readlineptr, &mycmd); 
 		//..........parse_args(&mycmd);
 		//..........parse_redirect(&mycmd);
 		//..........exec_cmd(&mycmd);
