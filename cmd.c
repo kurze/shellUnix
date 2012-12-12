@@ -32,4 +32,19 @@ void parse_membres(char *chaine,cmd *ma_cmd){
 
 	}
 	ma_cmd->nb_membres = i;
+// 	printf(" ma_cmd->nb_membres = %d", ma_cmd->nb_membres);
+}
+
+void free_membres(cmd *ma_cmd){
+	int i=0;
+	if(ma_cmd->cmd_membres==NULL){
+		return;
+	}else{
+		while( i < ma_cmd->nb_membres){
+			free(ma_cmd->cmd_membres[i]);
+			i++;
+		}
+		free(ma_cmd->cmd_membres);
+// 		ma_cmd->cmd_membres = NULL;
+	}
 }
