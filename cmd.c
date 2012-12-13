@@ -4,15 +4,15 @@
 void parse_membres(char *chaine,cmd *ma_cmd){
 	unsigned int i=0;
 	char * cTmp;
-	
+
 	ma_cmd->cmd_initial = chaine;
-	
+
 	ma_cmd->cmd_membres = (char **) malloc(sizeof(char *)*1);
 	if(ma_cmd==NULL){
 		perror("allocation raté // parse_membres");
 		exit(1);
 	}
-	
+
 	cTmp = strtok(ma_cmd->cmd_initial, "|");
 	while( cTmp != NULL){
 		// réalocation du tableau
@@ -35,16 +35,13 @@ void parse_membres(char *chaine,cmd *ma_cmd){
 // 	printf(" ma_cmd->nb_membres = %d", ma_cmd->nb_membres);
 }
 
+
 void free_membres(cmd *ma_cmd){
-	int i=0;
-	if(ma_cmd->cmd_membres==NULL){
-		return;
-	}else{
-		while( i < ma_cmd->nb_membres){
-			free(ma_cmd->cmd_membres[i]);
-			i++;
-		}
+	if(ma_cmd->cmd_membres!=NULL){
+		/**
+		 * ne supprimer que le tableau et pas chaque case, car crée erreur sinon (et passe pas valgrind)
+		 */
 		free(ma_cmd->cmd_membres);
-// 		ma_cmd->cmd_membres = NULL;
+		ma_cmd->nb_membres = 0;
 	}
 }
