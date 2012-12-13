@@ -35,6 +35,14 @@ void parse_membres(char *chaine,cmd *ma_cmd){
 // 	printf(" ma_cmd->nb_membres = %d", ma_cmd->nb_membres);
 }
 
+void aff_membres(cmd *ma_cmd){
+	unsigned int i=0;
+	printf("nombre de membres : %d\n", ma_cmd->nb_membres);
+	while(i < (ma_cmd->nb_membres)){
+		printf("membres n°%d : %s\n", i, ma_cmd->cmd_membres[i]);
+		i++;
+	}
+}
 
 void free_membres(cmd *ma_cmd){
 	if(ma_cmd->cmd_membres!=NULL){
