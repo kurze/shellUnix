@@ -5,7 +5,7 @@
 
 #include "shell_fct.h"
 #include "constante.h"
- 
+
 
 int main(int argc, char** argv)
 {
@@ -29,15 +29,19 @@ int main(int argc, char** argv)
 		readlineptr = readline(str);
 
 		//..........
-		parse_membres(readlineptr, &mycmd); 
+		parse_membres(readlineptr, &mycmd);
+#ifdef DEBUG_FLAG
+		aff_membres(&mycmd);
+#endif
 		//..........parse_args(&mycmd);
 		//..........parse_redirect(&mycmd);
 		//..........exec_cmd(&mycmd);
-		//.......... 
+		//..........
 
 		free(readlineptr);
+		free_membres(&mycmd);
 		//..........
-		
+
 	}
 	//..........
 	return 0;
