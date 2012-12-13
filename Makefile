@@ -1,10 +1,10 @@
 CC=gcc
-LIBS=-lreadline -lpthread -g
+LIBS=-lreadline -lpthread
 EXEC=myshell
 all:$(EXEC)
-CCFLAGS=-g -Wall
+CCFLAGS=-g -Wall -DDEBUG_FLAG
 
-$(EXEC): main.o cmd.o shell_fct.o 
+$(EXEC): main.o cmd.o shell_fct.o
 	gcc $(CCFLAGS) -o  $(EXEC) main.o cmd.o shell_fct.o $(LIBS)
 
 cmd.o: cmd.c
@@ -12,9 +12,9 @@ cmd.o: cmd.c
 
 shell_fct.o: shell_fct.c
 	$(CC)  $(CCFLAGS) -o shell_fct.o -c shell_fct.c
- 
+
 main.o: main.c
 	$(CC)  $(CCFLAGS) -o main.o -c main.c
- 
+
 clean:
 	rm -vf *.o
