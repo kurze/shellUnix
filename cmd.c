@@ -124,4 +124,15 @@ void aff_args(cmd *c){
 	printf("\n");
 }
 
-void free_args(cmd *c);
+void free_args(cmd *c){
+	unsigned int i;
+	if(c->cmd_args!=NULL){
+		for(i=0; i<c->nb_membres; i++){
+			if(c->cmd_args[i]!=NULL){
+				free(c->cmd_args[i]);
+			}
+		}
+		free(c->cmd_args);
+		free(c->nb_args_membres);
+	}
+}
