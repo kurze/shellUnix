@@ -8,18 +8,18 @@ void parse_membres(char *chaine,cmd *ma_cmd){
 	ma_cmd->cmd_initial = chaine;
 
 	ma_cmd->cmd_membres = (char **) malloc(sizeof(char *)*1);
-	if(ma_cmd==NULL){
+	if(ma_cmd->cmd_membres==NULL){
 		perror("allocation raté // parse_membres");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	cTmp = strtok(ma_cmd->cmd_initial, "|");
 	while( cTmp != NULL){
 		// réalocation du tableau
 		ma_cmd->cmd_membres = (char **) realloc(ma_cmd->cmd_membres, sizeof(char *)*(i+1));
-		if(ma_cmd==NULL){
+		if(ma_cmd->cmd_membres==NULL){
 			perror("réallocation raté // parse_membres");
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		// affectation
