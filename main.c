@@ -33,7 +33,10 @@ int main(int argc, char** argv)
 #ifdef DEBUG_FLAG
 		aff_membres(&mycmd);
 #endif
-		//..........parse_args(&mycmd);
+		parse_args(&mycmd);
+#ifdef DEBUG_FLAG
+		aff_args(&mycmd);
+#endif
 		//..........parse_redirect(&mycmd);
 		//..........exec_cmd(&mycmd);
 		//..........
