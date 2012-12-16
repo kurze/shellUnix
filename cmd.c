@@ -53,7 +53,7 @@ void free_membres(cmd *ma_cmd){
 }
 
 void parse_args(cmd *c){
-	unsigned int i=0;
+	unsigned int i, j;
 	char * cTmp;
 
 	// allocation de la première dimension du tableau
@@ -71,7 +71,37 @@ void parse_args(cmd *c){
 			exit(EXIT_FAILURE);
 		}
 
+		c->nb_args_membres = (unsigned int *) malloc(sizeof(unsigned int)*i);
+		if(c->cmd_args[i]==NULL){
+			perror("allocation raté // parse_args");
+			exit(EXIT_FAILURE);
+		}
+
 		cTmp = strtok(c->cmd_membres[i], " ");
+
+		while( cTmp != NULL){
+			// réalocation du tableau
+			c->cmd_args[i] = (char **) realloc(c->cmd_args[i], sizeof(char *)*(j+1));
+			if(c->cmd_args[i]==NULL){
+				perror("réallocation raté // parse_args");
+				exit(EXIT_FAILURE);
+			}
+
+			// affectation
+			// test si l'argument est une redirection (si oui ->  enregistre NULL)
+			if(index(cTmp, (int) ">") != NULL && index(cTmp, (int) "<") != NULL){
+				c->cmd_args[i][j] = cTmp;
+			}else{
+				c->cmd_args[i][j] = NULL;
+			}
+
+			//extraction du membres suivants
+			cTmp = strtok(NULL, "|");
+
+			j++;
+		}
+
+		c->nb_args_membres[i] = j;
 	}
 }
 
