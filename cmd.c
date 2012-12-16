@@ -46,10 +46,34 @@ void aff_membres(cmd *ma_cmd){
 
 void free_membres(cmd *ma_cmd){
 	if(ma_cmd->cmd_membres!=NULL){
-		/**
-		 * ne supprimer que le tableau et pas chaque case, car crée erreur sinon (et passe pas valgrind)
-		 */
+		//ne supprimer que le tableau et pas chaque case, car crée erreur sinon (et passe pas valgrind)
 		free(ma_cmd->cmd_membres);
 		ma_cmd->nb_membres = 0;
 	}
 }
+
+void parse_args(cmd *c){
+	unsigned int i=0;
+	char * cTmp;
+
+	// allocation de la première dimension du tableau
+	c->cmd_args = (char ***) malloc(sizeof(char **) * c->nb_membres);
+	if(c->cmd_args==NULL){
+		perror("allocation raté // parse_args");
+		exit(EXIT_FAILURE);
+	}
+
+	for(i=0; i < c->nb_membres; i++){
+
+		c->cmd_args[i] = (char **) malloc(sizeof(char *)*1);
+		if(c->cmd_args[i]==NULL){
+			perror("allocation raté // parse_args");
+			exit(EXIT_FAILURE);
+		}
+
+		cTmp = strtok(c->cmd_membres[i], " ");
+	}
+}
+
+void aff_args(cmd *c);
+void free_args(cmd *c);
