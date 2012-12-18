@@ -1,20 +1,43 @@
 CC=gcc
-LIBS=-lreadline -lpthread
+LDFLAGS=-lreadline -lpthread
 EXEC=myshell
+CFLAGS=-Wall
+DEBUG=0
+
+ifeq ($(DEBUG), 1)
+	CCFLAGS+=-g -DDEBUG_FLAG
+else
+	CCFLAGS+=-O3
+endif
+
+rebuild : clean all
+
 all:$(EXEC)
-CCFLAGS=-g -Wall -DDEBUG_FLAG
 
 $(EXEC): main.o cmd.o shell_fct.o
-	gcc $(CCFLAGS) -o  $(EXEC) main.o cmd.o shell_fct.o $(LIBS)
+	$(CC) -o  $(EXEC) $^ $(LDFLAGS)
 
-cmd.o: cmd.c
-	$(CC)  $(CCFLAGS) -o cmd.o -c cmd.c
-
-shell_fct.o: shell_fct.c
-	$(CC)  $(CCFLAGS) -o shell_fct.o -c shell_fct.c
-
-main.o: main.c
-	$(CC)  $(CCFLAGS) -o main.o -c main.c
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $^
 
 clean:
 	rm -vf *.o
+
+# var qui existe à chaque fois
+#	$@  : cible
+#	$< : premiere dépendance
+#	$^ : tout les pré-requis
+#	$+ : la même sans duplicata
+
+# pattern
+#	a.o  b.o => %.o
+#	[prefixe]%[suffixe]
+
+# conditions
+#	ifdef var
+#	...
+#	endif
+#	ifndef
+#	ifeq (var1,var2)
+#	ifneq
+#
