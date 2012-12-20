@@ -7,7 +7,7 @@
 #include "constante.h"
 
 
-int main(int argc, char** argv)
+int main(void)
 {
 	//..........
 	int ret = MYSHELL_CMD_OK;
