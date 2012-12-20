@@ -88,7 +88,7 @@ void free_membres(cmd *c){
 
 void parse_args(cmd *c){
 	unsigned int i, j, redirection;
-	char * cTmp;
+	char * cTmp=NULL, * cTok=NULL;
 
 	// allocation de la première dimension du tableau
 	c->cmd_args = (char ***) malloc(sizeof(char **) * c->nb_membres);
@@ -112,11 +112,12 @@ void parse_args(cmd *c){
 			exit(EXIT_FAILURE);
 		}
 
-
-		cTmp = strtok(c->cmd_membres[i], " ");
+		stringCopy(&cTok, c->cmd_membres[i]);
+		cTmp = strtok(cTok, " ");
 
 		redirection = 0;
 		while( cTmp != NULL && !redirection){
+
 			// réalocation du tableau
 			c->cmd_args[i] = (char **) realloc(c->cmd_args[i], sizeof(char *)*(j+1));
 			if(c->cmd_args[i]==NULL){
@@ -127,7 +128,7 @@ void parse_args(cmd *c){
 			// affectation
 			// test si l'argument est une redirection (si oui ->  enregistre NULL)
 			if(index(cTmp, '>') == NULL && index(cTmp, '<') == NULL){
-				c->cmd_args[i][j] = cTmp;
+				stringCopy(&(c->cmd_args[i][j]), cTmp);
 			}else{
 				c->cmd_args[i][j] = NULL;
 				redirection = 1;
@@ -151,7 +152,7 @@ void parse_args(cmd *c){
 		}else{
 			c->nb_args_membres[i] = j-1;
 		}
-
+		free(cTok);
 	}
 }
 
@@ -170,10 +171,15 @@ void aff_args(cmd *c){
 }
 
 void free_args(cmd *c){
-	unsigned int i;
+	unsigned int i, j;
 	if(c->cmd_args!=NULL){
 		for(i=0; i<c->nb_membres; i++){
 			if(c->cmd_args[i]!=NULL){
+				for(j=0; j< c->nb_args_membres[i]; j++){
+					if(c->cmd_args[i][j]!=NULL){
+						free(c->cmd_args[i][j]);
+					}
+				}
 				free(c->cmd_args[i]);
 			}
 		}
