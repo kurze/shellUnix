@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <stdlib.h>
+#include <string.h>
+#include "constante.h"
 
 
 typedef struct commande {
@@ -24,8 +26,8 @@ void parse_args(cmd *c);
 void parse_membres(char *chaine,cmd *c);
 void aff_membres(cmd *c);
 void free_membres(cmd *c);
-int parse_redirect(unsigned int i,cmd *c);
+void parse_redirect(cmd *c);
 void free_redirect(cmd *c);
-void aff_redirect(cmd c, int i);
+void aff_redirect(cmd *c);
 
 #endif

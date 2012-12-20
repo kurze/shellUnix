@@ -31,14 +31,22 @@ int main(void)
 
 		//..........
 		parse_membres(readlineptr, &mycmd);
+
 #ifdef DEBUG_FLAG
 		aff_membres(&mycmd);
 #endif
+
 		parse_args(&mycmd);
+
 #ifdef DEBUG_FLAG
 		aff_args(&mycmd);
 #endif
-		//..........parse_redirect(&mycmd);
+
+		parse_redirect(&mycmd);
+
+#ifdef DEBUG_FLAG
+		aff_redirect(&mycmd);
+#endif
 		//..........exec_cmd(&mycmd);
 		//..........
 

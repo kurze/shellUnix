@@ -1,4 +1,3 @@
-#include <string.h>
 #include "cmd.h"
 
 void stringCopy(char ** dest, const char * src){
@@ -185,4 +184,72 @@ void free_args(cmd *c){
 		free(c->cmd_args);
 		free(c->nb_args_membres);
 	}
+}
+
+
+void parse_redirect(cmd *c){
+	unsigned int i = 0, redirection = 0;
+	char * cTmp=NULL, * ptrRedir=NULL, * cTok=NULL;
+
+	if(c->redirect==NULL){
+		c->redirect = (char ***) malloc(sizeof(char **) * c->nb_membres);
+		if(c->redirect==NULL){
+			perror("allocation raté // parse_redirect");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	for(i=0; i < c->nb_membres; i++){
+
+		c->redirect[i] = (char **) malloc(sizeof(char *) * 3);
+		if(c->redirect[i]==NULL){
+			perror("allocation raté // parse_redirect");
+			exit(EXIT_FAILURE);
+		}
+		c->redirect[i][STDIN ]=NULL;
+		c->redirect[i][STDOUT]=NULL;
+		c->redirect[i][STDERR]=NULL;
+
+		stringCopy(&cTok, c->cmd_membres[i]);
+		cTmp = strtok(cTok, " ");
+
+		redirection=0;
+
+		while( cTmp != NULL && !redirection){
+			if( index(cTmp, '<') != NULL ){ // test si redirection de l'entrée standard
+				cTmp = strtok(NULL, " ");
+				stringCopy( &(c->redirect[i][STDIN]), cTmp);
+				redirection = 1;
+			}
+			else if( index(cTmp, '>') != NULL ){ // test si redirection de la sortie standard
+				cTmp = strtok(NULL, " ");
+				stringCopy( &(c->redirect[i][STDOUT]), cTmp);
+				redirection = 1;
+			}
+			else if( (ptrRedir = index(cTmp, '2')) != NULL && ptrRedir[1] == '>'){ // test si redirection de la sortie d'erreur
+				cTmp = strtok(NULL, " ");
+				stringCopy( &(c->redirect[i][STDERR]), cTmp);
+				redirection = 1;
+			}
+
+			cTmp = strtok(NULL, " ");
+		}
+		free(cTok);
+	}
+}
+
+void aff_redirect(cmd *c){
+	unsigned int numRedirection=0;
+	printf("redirection : \n");
+
+	while(numRedirection< c->nb_membres){
+		printf("\tmembre : %d\n", numRedirection);
+
+		printf("\t\t entrée standard : %s\n", c->redirect[numRedirection][STDIN ]);
+		printf("\t\t sortie standard : %s\n", c->redirect[numRedirection][STDOUT]);
+		printf("\t\t sortie erreur   : %s\n", c->redirect[numRedirection][STDERR]);
+
+		numRedirection++;
+	}
+	printf("\n");
 }
