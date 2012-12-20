@@ -1,21 +1,21 @@
 CC=gcc
 LDFLAGS=-lreadline -lpthread
 EXEC=myshell
-CFLAGS=-Wall
+CFLAGS=-Wall -Wextra
 DEBUG=0
 
 ifeq ($(DEBUG), 1)
-	CCFLAGS+=-g -DDEBUG_FLAG
+	CFLAGS+=-g -DDEBUG_FLAG
 else
-	CCFLAGS+=-O3
+	CFLAGS+=-O3
 endif
-
-rebuild : clean all
 
 all:$(EXEC)
 
+rebuild : clean all
+
 $(EXEC): main.o cmd.o shell_fct.o
-	$(CC) -o  $(EXEC) $^ $(LDFLAGS)
+	$(CC) -o $(EXEC) $^ $(LDFLAGS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $^
