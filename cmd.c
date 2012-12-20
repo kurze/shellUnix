@@ -1,6 +1,19 @@
 #include <string.h>
 #include "cmd.h"
 
+void stringCopy(char ** dest, const char * src){
+
+	size_t taille = 0;
+	taille = sizeof(char)*(strlen(src)+1);
+
+	*dest = malloc(taille);
+	if(*dest==NULL){
+		perror("allocation raté // stringCopy");
+		exit(EXIT_FAILURE);
+	}
+	strcpy(*dest, src);
+}
+
 void initCMD(cmd * c){
 	c->cmd_initial = NULL;
 	c->cmd_membres = NULL;
