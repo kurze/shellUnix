@@ -16,6 +16,8 @@ typedef struct commande {
 	int **type_redirect;			/* Pour stocker le type de rediction */
 } cmd;
 
+void initCMD(cmd * c);
+
 void aff_args(cmd *c);
 void free_args(cmd *c);
 void parse_args(cmd *c);

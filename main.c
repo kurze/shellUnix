@@ -18,7 +18,8 @@ int main(void)
 	char hostname[256];
 	char workingdirectory[256];
 
-	//..........
+	initCMD(&mycmd);
+
 	while(ret != MYSHELL_FCT_EXIT)
 	{
 		infos=getpwuid(getuid());

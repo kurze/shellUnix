@@ -1,6 +1,17 @@
 #include <string.h>
 #include "cmd.h"
 
+void initCMD(cmd * c){
+	c->cmd_initial = NULL;
+	c->cmd_membres = NULL;
+	c->nb_args_membres = 0;
+	c->cmd_args = NULL;
+	c->nb_args_membres = NULL;
+	c->redirect = NULL;
+	c->type_redirect = NULL;
+}
+
+
 void parse_membres(char *chaine,cmd *c){
 	unsigned int i=0;
 	char * cTmp;
