@@ -5,6 +5,10 @@ void stringCopy(char ** dest, const char * src){
 	size_t taille = 0;
 	taille = sizeof(char)*(strlen(src)+1);
 
+	if(*dest!=NULL){
+		free(dest);
+	}
+
 	*dest = malloc(taille);
 	if(*dest==NULL){
 		perror("allocation raté // stringCopy");
@@ -47,6 +51,7 @@ void parse_membres(char *chaine,cmd *c){
 			exit(EXIT_FAILURE);
 		}
 
+		c->cmd_membres[i]=NULL;
 		// affectation
 		stringCopy(&(c->cmd_membres[i]), cTmp);
 
@@ -83,6 +88,7 @@ void free_membres(cmd *c){
 	}
 	free(c->cmd_membres);
 }
+
 
 void parse_args(cmd *c){
 	unsigned int i, j, redirection;
@@ -124,11 +130,11 @@ void parse_args(cmd *c){
 			}
 
 			// affectation
+			c->cmd_args[i][j] = NULL;
 			// test si l'argument est une redirection (si oui ->  enregistre NULL)
 			if(index(cTmp, '>') == NULL && index(cTmp, '<') == NULL){
 				stringCopy(&(c->cmd_args[i][j]), cTmp);
 			}else{
-				c->cmd_args[i][j] = NULL;
 				redirection = 1;
 			}
 
