@@ -253,3 +253,20 @@ void aff_redirect(cmd *c){
 	}
 	printf("\n");
 }
+
+void free_redirect(cmd * c){
+	unsigned int i, j;
+	if(c->redirect!=NULL){
+		for(i=0; i< c->nb_membres; i++){
+			if(c->redirect[i]!=NULL){
+				for(j=0; j<3; j++){
+					if(c->redirect[i][j]!=NULL){
+						free(c->redirect[i][j]);
+					}
+				}
+				free(c->redirect[i]);
+			}
+		}
+		free(c->redirect);
+	}
+}

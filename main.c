@@ -51,6 +51,7 @@ int main(void)
 		//..........
 
 		free(readlineptr);
+		free_redirect(&mycmd);
 		free_args(&mycmd);
 		free_membres(&mycmd);
 		//..........
