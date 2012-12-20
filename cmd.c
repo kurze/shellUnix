@@ -38,7 +38,6 @@ void parse_membres(char *chaine,cmd *c){
 	}
 
 	stringCopy(&cTok, c->cmd_initial);
-	printf(" cTok: %s\n", cTok);
 
 	cTmp = strtok(cTok, "|");
 	while( cTmp != NULL){
