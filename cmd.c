@@ -27,17 +27,20 @@ void initCMD(cmd * c){
 
 void parse_membres(char *chaine,cmd *c){
 	unsigned int i=0;
-	char * cTmp;
+	char * cTmp=NULL, * cTok=NULL;
 
+// 	stringCopy(c->cmd_initial, chaine);
 	c->cmd_initial = chaine;
-
 	c->cmd_membres = (char **) malloc(sizeof(char *)*1);
 	if(c->cmd_membres==NULL){
 		perror("allocation raté // parse_membres");
 		exit(EXIT_FAILURE);
 	}
 
-	cTmp = strtok(c->cmd_initial, "|");
+	stringCopy(&cTok, c->cmd_initial);
+	printf(" cTok: %s\n", cTok);
+
+	cTmp = strtok(cTok, "|");
 	while( cTmp != NULL){
 		// réalocation du tableau
 		c->cmd_membres = (char **) realloc(c->cmd_membres, sizeof(char *)*(i+1));
@@ -47,7 +50,7 @@ void parse_membres(char *chaine,cmd *c){
 		}
 
 		// affectation
-		c->cmd_membres[i] = cTmp;
+		stringCopy(&(c->cmd_membres[i]), cTmp);
 
 		//extraction du membres suivants
 		cTmp = strtok(NULL, "|");
@@ -56,7 +59,8 @@ void parse_membres(char *chaine,cmd *c){
 
 	}
 	c->nb_membres = i;
-// 	printf(" c->nb_membres = %d", c->nb_membres);
+	free(cTok);
+	free(cTmp);
 }
 
 void aff_membres(cmd *c){
@@ -70,11 +74,16 @@ void aff_membres(cmd *c){
 }
 
 void free_membres(cmd *c){
-	if(c->cmd_membres!=NULL){
-		//ne supprimer que le tableau et pas chaque case, car crée erreur sinon (et passe pas valgrind)
-		free(c->cmd_membres);
-		c->nb_membres = 0;
+	unsigned int i=0;
+	if(c->cmd_membres==NULL){
+		return;
+	}else{
+		while( i < c->nb_membres){
+			free(c->cmd_membres[i]);
+			i++;
+		}
 	}
+	free(c->cmd_membres);
 }
 
 void parse_args(cmd *c){
