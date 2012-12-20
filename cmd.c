@@ -106,7 +106,19 @@ void parse_args(cmd *c){
 			j++;
 		}
 
-		c->nb_args_membres[i] = j;
+		if(!redirection){
+			c->cmd_args[i] = (char **) realloc(c->cmd_args[i], sizeof(char *)*(j+1));
+			if(c->cmd_args[i]==NULL){
+				perror("réallocation raté // parse_args");
+				exit(EXIT_FAILURE);
+			}
+			c->cmd_args[i][j] = NULL;
+
+			c->nb_args_membres[i] = j;
+		}else{
+			c->nb_args_membres[i] = j-1;
+		}
+
 	}
 }
 
@@ -115,7 +127,7 @@ void aff_args(cmd *c){
 	while(nbMembres< c->nb_membres){
 		nbArgs=0;
 		printf("nombre d'arguments pour le membres %d: %d\n",nbMembres,  c->nb_args_membres[nbMembres]);
-		while(nbArgs < c->nb_args_membres[nbMembres]){
+		while(nbArgs < c->nb_args_membres[nbMembres]+1){
 			printf("\targument n°%d du menbres n°%d: %s\n", nbArgs, nbMembres, c->cmd_args[nbMembres][nbArgs]);
 			nbArgs++;
 		}
