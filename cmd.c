@@ -82,7 +82,9 @@ void free_membres(cmd *c){
 		return;
 	}else{
 		while( i < c->nb_membres){
-			free(c->cmd_membres[i]);
+			if(c->cmd_membres[i]){
+				free(c->cmd_membres[i]);
+			}
 			i++;
 		}
 	}
