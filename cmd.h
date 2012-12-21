@@ -21,13 +21,15 @@ typedef struct commande {
 void initCMD(cmd * c);
 
 void aff_args(cmd *c);
+void aff_membres(cmd *c);
+void aff_redirect(cmd *c);
+
 void free_args(cmd *c);
+void free_membres(cmd *c);
+void free_redirect(cmd *c);
+
 void parse_args(cmd *c);
 void parse_membres(char *chaine,cmd *c);
-void aff_membres(cmd *c);
-void free_membres(cmd *c);
 void parse_redirect(cmd *c);
-void free_redirect(cmd *c);
-void aff_redirect(cmd *c);
 
 #endif
