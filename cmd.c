@@ -68,7 +68,7 @@ void parse_membres(char *chaine,cmd *c){
 
 void aff_membres(cmd *c){
 	unsigned int i=0;
-	printf("nombre de membres : %d\n", c->nb_membres);
+	printf("\nnombre de membres : %d\n", c->nb_membres);
 	while(i < (c->nb_membres)){
 		printf("membres n°%d : %s\n", i, c->cmd_membres[i]);
 		i++;
