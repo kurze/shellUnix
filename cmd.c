@@ -6,7 +6,7 @@ void stringCopy(char ** dest, const char * src){
 	taille = sizeof(char)*(strlen(src)+1);
 
 	if(*dest!=NULL){
-		free(dest);
+		free(*dest);
 	}
 
 	*dest = malloc(taille);
