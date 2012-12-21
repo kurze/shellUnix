@@ -5,7 +5,7 @@ CFLAGS=-Wall -Wextra
 DEBUG=0
 
 ifeq ($(DEBUG), 1)
-	CFLAGS+=-g -DDEBUG_FLAG
+	CFLAGS+=-g -DDEBUG_FLAG -O0
 else
 	CFLAGS+=-O3
 endif
