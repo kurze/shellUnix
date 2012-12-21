@@ -68,9 +68,9 @@ void parse_membres(char *chaine,cmd *c){
 
 void aff_membres(cmd *c){
 	unsigned int i=0;
-	printf("\nnombre de membres : %d\n", c->nb_membres);
+	printf("\nNombre de membres : %d\n", c->nb_membres);
 	while(i < (c->nb_membres)){
-		printf("membres n°%d : %s\n", i, c->cmd_membres[i]);
+		printf("Membre n°%d : %s\n", i, c->cmd_membres[i]);
 		i++;
 	}
 	printf("\n");
@@ -170,9 +170,9 @@ void aff_args(cmd *c){
 	unsigned int nbMembres=0, nbArgs=0;
 	while(nbMembres< c->nb_membres){
 		nbArgs=0;
-		printf("nombre d'arguments pour le membres %d: %d\n",nbMembres,  c->nb_args_membres[nbMembres]);
+		printf("nombre d'arguments pour le membre %d: %d\n",nbMembres,  c->nb_args_membres[nbMembres]);
 		while(nbArgs < c->nb_args_membres[nbMembres]+1){
-			printf("\targument n°%d du menbres n°%d: %s\n", nbArgs, nbMembres, c->cmd_args[nbMembres][nbArgs]);
+			printf("\targument n°%d du menbre n°%d: %s\n", nbArgs, nbMembres, c->cmd_args[nbMembres][nbArgs]);
 			nbArgs++;
 		}
 		nbMembres++;
