@@ -134,10 +134,14 @@ void parse_args(cmd *c){
 			// affectation
 			c->cmd_args[i][j] = NULL;
 			// test si l'argument est une redirection (si oui ->  enregistre NULL)
-			if(index(cTmp, '>') == NULL && index(cTmp, '<') == NULL){
-				stringCopy(&(c->cmd_args[i][j]), cTmp);
-			}else{
+			if( (i== 0 && index(cTmp, '<') != NULL) ){
 				redirection = 1;
+			}
+			else if( (i==(c->nb_membres-1) && index(cTmp, '>') != NULL) ){
+				redirection = 1;
+			}
+			else{
+				stringCopy(&(c->cmd_args[i][j]), cTmp);
 			}
 
 			//extraction du membres suivants
@@ -224,17 +228,17 @@ void parse_redirect(cmd *c){
 		redirection=0;
 
 		while( cTmp != NULL && !redirection){
-			if( index(cTmp, '<') != NULL ){ // test si redirection de l'entrée standard
+			if( i == 0 && index(cTmp, '<') != NULL ){ // test si redirection de l'entrée standard
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDIN]), cTmp);
 				redirection = 1;
 			}
-			else if( index(cTmp, '>') != NULL ){ // test si redirection de la sortie standard
+			else if( i==c->nb_membres-1 &&  index(cTmp, '>') != NULL ){ // test si redirection de la sortie standard
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDOUT]), cTmp);
 				redirection = 1;
 			}
-			else if( (ptrRedir = index(cTmp, '2')) != NULL && ptrRedir[1] == '>'){ // test si redirection de la sortie d'erreur
+			else if( i==c->nb_membres-1 && (ptrRedir = index(cTmp, '2')) != NULL && ptrRedir[1] == '>'){ // test si redirection de la sortie d'erreur
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDERR]), cTmp);
 				redirection = 1;
