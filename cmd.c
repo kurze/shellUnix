@@ -59,32 +59,32 @@ void parse_args(cmd *c){
 
 	// allocation de la première dimension du tableau
 	c->cmd_args = (char ***) malloc(sizeof(char **) * c->nb_membres);
-	if(c->cmd_args==NULL){
+	if(c->cmd_args==NULL)
+	{
 		perror("allocation raté // parse_args");
 		exit(EXIT_FAILURE);
 	}
-
+	
 	c->nb_args_membres = (unsigned int *) malloc(sizeof(unsigned int)*c->nb_membres);
-	if(c->nb_args_membres==NULL){
+	if(c->nb_args_membres==NULL)
+	{
 		perror("allocation raté // parse_args");
 		exit(EXIT_FAILURE);
 	}
-
-	for(i=0; i < c->nb_membres; i++){
+	
+	for(i=0; i < c->nb_membres; i++)
+	{
 		j=0;
-
 		c->cmd_args[i] = (char **) malloc(sizeof(char *)*1);
 		if(c->cmd_args[i]==NULL){
 			perror("allocation raté // parse_args");
 			exit(EXIT_FAILURE);
 		}
-
-
 		cTmp = strtok(c->cmd_membres[i], " ");
 
 		redirection = 0;
 		while( cTmp != NULL && !redirection){
-			// réalocation du tableau
+			// réallocation du tableau
 			c->cmd_args[i] = (char **) realloc(c->cmd_args[i], sizeof(char *)*(j+1));
 			if(c->cmd_args[i]==NULL){
 				perror("réallocation raté // parse_args");
@@ -95,18 +95,21 @@ void parse_args(cmd *c){
 			// test si l'argument est une redirection (si oui ->  enregistre NULL)
 			if(index(cTmp, '>') == NULL && index(cTmp, '<') == NULL){
 				c->cmd_args[i][j] = cTmp;
-			}else{
+			}
+			else
+			{
 				c->cmd_args[i][j] = NULL;
 				redirection = 1;
 			}
 
-			//extraction du membres suivants
+			//extraction du membre suivant
 			cTmp = strtok(NULL, " ");
 
 			j++;
 		}
-
 		c->nb_args_membres[i] = j;
+		//on met le dernier membre à null
+		c->cmd_args[i][j]=NULL;
 	}
 }
 
