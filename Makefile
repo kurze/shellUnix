@@ -24,13 +24,20 @@ clean:
 	rm -vf *.o
 
 # var qui existe à chaque fois
-#	$@  : cible
-#	$< : premiere dépendance
-#	$^ : tout les pré-requis
-#	$+ : la même sans duplicata
+#	$@	: cible
+#	$<	: premiere dépendance
+#	$^	: tout les pré-requis
+#	$+	: la même sans duplicata
+
+# var classique
+#	CC	: Compiler Collection
+#	LDFLAGS	: Linker Flags
+#	CFLAGS	: Compiler Flags
+#	EXEC	: EXECutable name
 
 # pattern
-#	a.o  b.o => %.o
+#	% 	: joker
+#	a.o b.o	: %.o
 #	[prefixe]%[suffixe]
 
 # conditions
