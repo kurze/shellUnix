@@ -16,7 +16,7 @@ int exec_cmd(cmd * c)
 //utilise un tableau de pointeurs sur des chaines de caracteres terminées par des caracteres nuls, qui constituent les arguments disponibles pour le programme à exécuter. Le tableau doit se terminer par un pointeur NULL.
 
 	int ** tube;
-	int i=0,j;
+	unsigned int i=0,j;
 	int status;
 
 	if (c->nb_membres==0)
@@ -94,5 +94,5 @@ int exec_cmd(cmd * c)
 	free(tube);
 	return 0;
 }
-	
+
 
