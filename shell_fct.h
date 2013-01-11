@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include "cmd.h"
+#include <signal.h>
 
 int exec_cmd(cmd* ma_cmd);
 
