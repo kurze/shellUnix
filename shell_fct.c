@@ -10,7 +10,7 @@ int exec_cmd(cmd * c)
 
 	pid_t pid;
 	int ** tube;
-	int i=0,j;
+	unsigned int i=0,j;
 
 	if (c->nb_membres==0)
 		return -1;
@@ -78,5 +78,5 @@ int exec_cmd(cmd * c)
 	free(tube);
 	return 0;
 }
-	
+
 
