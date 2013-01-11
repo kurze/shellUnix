@@ -10,11 +10,14 @@ else
 	CFLAGS+=-O3
 endif
 
-all:$(EXEC)
+all:$(EXEC)-client $(EXEC)-serveur
 
 rebuild : clean all
 
-$(EXEC): main.o cmd.o shell_fct.o
+$(EXEC)-serveur: serveur.o cmd.o shell_fct.o
+	$(CC) -o $(EXEC) $^ $(LDFLAGS)
+
+$(EXEC)-client: client.o cmd.o shell_fct.o
 	$(CC) -o $(EXEC) $^ $(LDFLAGS)
 
 %.o: %.c
