@@ -51,14 +51,14 @@ int main(void)
 		if (strcmp(buf,""))
 			add_history(buf);
 
-	//..........
-	free(buf);
-	free(readlineptr);
-	free_redirect(mycmd);
-	free_args(mycmd);
-	free_membres(mycmd);
-	free(mycmd);
-	//..........
+		//..........
+		free(buf);
+		free(readlineptr);
+		free_redirect(mycmd);
+		free_args(mycmd);
+		free_membres(mycmd);
+		free(mycmd);
+		//..........
 
 	}
 	//..........
