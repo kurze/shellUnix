@@ -5,6 +5,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+#include <string.h>
+#include "constante.h"
 
 
 typedef struct commande {
@@ -17,14 +19,18 @@ typedef struct commande {
 	int **type_redirect;			/* Pour stocker le type de rediction */
 } cmd;
 
+void initCMD(cmd * c);
+
 void aff_args(cmd *c);
+void aff_membres(cmd *c);
+void aff_redirect(cmd *c);
+
 void free_args(cmd *c);
+void free_membres(cmd *c);
+void free_redirect(cmd *c);
+
 void parse_args(cmd *c);
 void parse_membres(char *chaine,cmd *c);
-void aff_membres(cmd *c);
-void free_membres(cmd *c);
-int parse_redirect(unsigned int i,cmd *c);
-void free_redirect(cmd *c);
-void aff_redirect(cmd c, int i);
+void parse_redirect(cmd *c);
 
 #endif
