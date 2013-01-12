@@ -71,11 +71,6 @@ int exec_cmd(cmd * c)
 				dup2(tube[i-1][1], 1);
 				close(tube[i-1][1]);
 			}
-			int n;
-			for(n = 0; n < 7; n++)
-			{
-				sleep(1);
-			}
 			if((execvp(c->cmd_args[i-1][0], c->cmd_args[i-1]))==-1)
 			{
 				perror("execvp");
