@@ -39,7 +39,7 @@ int exec_cmd(cmd * c)
 	{
 		i++;
 		//quand i sera à 3, on ne fait plus le pipe
-		if (i<c->nb_membres)
+		if (i<c->nb_membres && c->nb_membres>1)
 		{
 			pipe(tube[i-1]);
 		}
@@ -61,21 +61,26 @@ int exec_cmd(cmd * c)
 				}
 				close(fd);
 			}
-			//ne passe pas la première fois, code non réalisé
+			//ne passe pas la première fois, code non réalisé + p-e refaire code sans pipe quand il n'y en a pas
 			
-					
-			if (i>1)
-			{
-				close(tube[i-2][1]);
-				dup2(tube[i-2][0], 0);
-				close(tube[i-2][0]);
-			}
-			//ne passe pas la dernière fois, code non réalisé
-			if (i<c->nb_membres)
-			{
-				close(tube[i-1][0]);
-				dup2(tube[i-1][1], 1);
-				close(tube[i-1][1]);
+			// A FAIRE + voir avec stderr, s'il y a quelque chose à faire
+			//if(c->redirect[i-1][STDOUT!=NULL)
+			//fd=open(c->redirect[i-1][STDIN], O_RD|O_CREAT); // revoir td3-1 si soucis
+			if (c->nb_membres>1)
+				{		
+				if (i>1)
+				{
+					close(tube[i-2][1]);
+					dup2(tube[i-2][0], 0);
+					close(tube[i-2][0]);
+				}
+				//ne passe pas la dernière fois, code non réalisé
+				if (i<c->nb_membres)
+				{
+					close(tube[i-1][0]);
+					dup2(tube[i-1][1], 1);
+					close(tube[i-1][1]);
+				}
 			}
 			if((execvp(c->cmd_args[i-1][0], c->cmd_args[i-1]))==-1)
 			{
