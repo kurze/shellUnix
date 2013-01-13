@@ -35,15 +35,22 @@ int exec_cmd(cmd * c)
 			exit(EXIT_FAILURE);
 		}
 	}
+
 	while(i<c->nb_membres)
 	{
 		i++;
 		//quand i sera à 3, on ne fait plus le pipe
 		if (i<c->nb_membres && c->nb_membres>1)
 		{
-			pipe(tube[i-1]);
+			int valpipe;
+			valpipe=pipe(tube[i-1]);
+			if(valpipe==-1)
+			{
+				perror("pipe raté");
+				exit(errno);
+			}
 		}
-		//if(c->redirect[i-1][STDOUT]!=NULL)
+		
 		pid = fork();
 		//code du processus fils		
 		if(pid == 0)
@@ -63,11 +70,26 @@ int exec_cmd(cmd * c)
 			}
 			//ne passe pas la première fois, code non réalisé + p-e refaire code sans pipe quand il n'y en a pas
 			
-			// A FAIRE + voir avec stderr, s'il y a quelque chose à faire
-			//if(c->redirect[i-1][STDOUT!=NULL)
-			//fd=open(c->redirect[i-1][STDIN], O_RD|O_CREAT); // revoir td3-1 si soucis
+			//A FAIRE voir avec stderr, s'il y a quelque chose à faire + autres redirections
+			if(c->redirect[i-1][STDOUT]!=NULL)
+			{
+				int fd2;
+				//le fichier crée est utilisable en lecture/ecriture/execution
+				//Le fichier est effacé en entier a son ouverture --> O_TRUNC
+				fd2=open(c->redirect[i-1][STDOUT],O_RDWR|O_TRUNC|O_CREAT, S_IRWXU);
+				if(fd2==-1)
+					printf("Erreur \n");
+	
+				//aide fichier : 
+				if(dup2(fd2, 1) == -1)
+				{ 
+					perror("dup2"); 
+					exit(errno); 
+				}
+				close(fd2);
+			}
 			if (c->nb_membres>1)
-				{		
+			{		
 				if (i>1)
 				{
 					close(tube[i-2][1]);
