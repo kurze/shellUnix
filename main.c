@@ -4,11 +4,10 @@
 #include <pwd.h>
 #include "shell_fct.h"
 #include "constante.h"
-
+#include "cmd.h"
 
 int main(void)
 {
-	//..........
 	int ret = MYSHELL_CMD_OK;
 	cmd * mycmd;
 	char* readlineptr;
@@ -24,7 +23,6 @@ int main(void)
 		initCMD(mycmd);
 
 		//rl_bind_key('\t',rl_abort);//disable auto-complete
-
 		infos=getpwuid(getuid());
 		gethostname(hostname, 256);
 		getcwd(workingdirectory, 256);
@@ -40,11 +38,11 @@ int main(void)
 		parse_args(mycmd);
 		parse_redirect(mycmd);
 
-#ifdef DEBUG_FLAG
+//#ifdef DEBUG_FLAG
 		aff_membres(mycmd);
 		aff_args(mycmd);
 		aff_redirect(mycmd);
-#endif
+//#endif
 
 		exec_cmd(mycmd);
 		//on regarde si la chaine est vide ou non, et s'il est nécessaire de l'ajouter à l'historique
