@@ -1,5 +1,6 @@
 #include "shell_fct.h"
 #include <errno.h>
+#include <fcntl.h>
 
 pid_t pid;
 
@@ -12,12 +13,7 @@ void alarmHandler()
 
 int exec_cmd(cmd * c)
 {
-
-//int execvp(const char*file, char*const argv[]);
-//utilise un tableau de pointeurs sur des chaines de caracteres terminées par des caracteres nuls, qui constituent les arguments disponibles pour le programme à exécuter. Le tableau doit se terminer par un pointeur NULL.
-
 	int ** tube;
-	int valPipe;
 	unsigned int i=0,j;
 	
 	if (c->nb_membres==0)
@@ -45,18 +41,28 @@ int exec_cmd(cmd * c)
 		//quand i sera à 3, on ne fait plus le pipe
 		if (i<c->nb_membres)
 		{
-			valPipe=pipe(tube[i-1]);
-			if(valPipe==-1)
-			{
-				perror("pipe raté");
-				exit(EXIT_FAILURE);
-			}
+			pipe(tube[i-1]);
 		}
+		//if(c->redirect[i-1][STDOUT]!=NULL)
 		pid = fork();
 		//code du processus fils		
 		if(pid == 0)
-		{
+		{	
+			if(c->redirect[i-1][STDIN]!=NULL)
+			{
+				int fd;				
+				fd=open(c->redirect[i-1][STDIN], O_RDONLY);
+				if(fd==-1)
+					printf("Erreur \n");
+				if(dup2(fd, 0) == -1)
+				{ 
+					perror("dup2"); 
+					exit(errno); 
+				}
+				close(fd);
+			}
 			//ne passe pas la première fois, code non réalisé
+			
 					
 			if (i>1)
 			{
@@ -86,17 +92,17 @@ int exec_cmd(cmd * c)
 		}
 		
 	}
+	//code du processus pere
+	signal(SIGALRM, alarmHandler);
 	
-		//code du processus pere
-		signal(SIGALRM, alarmHandler);
-	
-		//déclenchement de l'alarme
-		alarm(10);
+	//déclenchement de l'alarme
+	alarm(10);
 
-		for (i=1;i<=c->nb_membres;i++)
-			wait(NULL);
-		//fin de l'execution du processus fils, on annule l'alarme
-		alarm(0);
+	for (i=1;i<=c->nb_membres;i++)
+		wait(NULL);
+	
+	//fin de l'execution du processus fils, on annule l'alarme
+	alarm(0);	
 	//desallocation
 	for(j=0;j<c->nb_membres;j++)
 	{
