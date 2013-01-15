@@ -4,8 +4,15 @@
 #include <sys/socket.h>
 #include <linux/in.h>
 #include <signal.h>
+/*
+#include <netinet/in.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+*/
 
-int main(int argc, char *argv[]){
+
+void serveur(int port){
 
 	struct sockaddr_in adrSocket;
 	int idSocket;
@@ -34,4 +41,40 @@ int main(int argc, char *argv[]){
 		fdSocket ) accept(idSocket, &adrSocket, &taille);
 		// traiter la connexion
 	}
+	/*
+	while(strcmp(commande, "fin")){
+		// attente d'une connexion
+		if((sockClient = accept(sockServ, (struct sockaddr *)(&adrClient), &adrSize)) == -1) {
+			perror("accept");
+			return -1;
+		}
+
+		// réception des données
+		if((lenMsg = recv(sockClient, commande, 256, 0)) == -1) {
+			perror("recv");
+			return -1;
+		}
+		commande[lenMsg] = '\0';
+		printf("%s\n", commande);
+
+// 		paramCommande = strtok(commande, " ");
+// 		printf("\n%s\n%s", commande, paramCommande);
+
+		pid = fork();
+		if(pid == 0){
+			close(0);
+			dup(sockClient);
+			close(1);
+			dup(sockClient);
+			close(2);
+			dup(sockClient);
+			execlp(commande, commande, NULL);
+		}
+	}
+	// fermeture de la connexion
+	close(sockServ);
+
+	return 0;
+	*/
 }
+
