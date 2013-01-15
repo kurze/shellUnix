@@ -44,7 +44,7 @@ void parse_membres(char *chaine,cmd *c){
 
 	cTmp = strtok(cTok, "|");
 	while( cTmp != NULL){
-		// réalocation du tableau
+		// réallocation du tableau
 		c->cmd_membres = (char **) realloc(c->cmd_membres, sizeof(char *)*(i+1));
 		if(c->cmd_membres==NULL){
 			perror("réallocation raté // parse_membres");
@@ -204,7 +204,8 @@ void free_args(cmd *c){
 void parse_redirect(cmd *c){
 	unsigned int i = 0, redirection = 0;
 	char * cTmp=NULL, * ptrRedir=NULL, * cTok=NULL;
-
+	
+	//Allocation de C->redirect
 	if(c->redirect==NULL){
 		c->redirect = (char ***) malloc(sizeof(char **) * c->nb_membres);
 		if(c->redirect==NULL){
@@ -220,6 +221,7 @@ void parse_redirect(cmd *c){
 			perror("allocation raté // parse_redirect");
 			exit(EXIT_FAILURE);
 		}
+		//A NULL PAR DEFAUT
 		c->redirect[i][STDIN ]=NULL;
 		c->redirect[i][STDOUT]=NULL;
 		c->redirect[i][STDERR]=NULL;
@@ -229,21 +231,21 @@ void parse_redirect(cmd *c){
 
 		redirection=0;
 
-		while( cTmp != NULL && !redirection){
+		while( cTmp != NULL){
 			if( i == 0 && index(cTmp, '<') != NULL ){ // test si redirection de l'entrée standard
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDIN]), cTmp);
-				redirection = 1;
+				//redirection = 1;
 			}
 			else if( i==c->nb_membres-1 &&  index(cTmp, '>') != NULL ){ // test si redirection de la sortie standard
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDOUT]), cTmp);
-				redirection = 1;
+				//redirection = 1;
 			}
 			else if( i==c->nb_membres-1 && (ptrRedir = index(cTmp, '2')) != NULL && ptrRedir[1] == '>'){ // test si redirection de la sortie d'erreur
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDERR]), cTmp);
-				redirection = 1;
+				//redirection = 1;
 			}
 
 			cTmp = strtok(NULL, " ");
