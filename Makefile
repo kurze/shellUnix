@@ -14,7 +14,7 @@ all:$(EXEC) $(EXEC)
 
 rebuild : clean all
 
-$(EXEC): main.o cmd.o shell_fct.o
+$(EXEC): main.o cmd.o shell_fct.o client.o serveur.o
 	$(CC) -o $(EXEC) $^ $(LDFLAGS)
 
 %.o: %.c
