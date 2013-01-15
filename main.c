@@ -5,6 +5,8 @@
 #include "shell_fct.h"
 #include "constante.h"
 
+#include "client.h"
+#include "serveur.h"
 
 int main(void)
 {
