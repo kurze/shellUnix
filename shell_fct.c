@@ -70,7 +70,6 @@ int exec_cmd(cmd * c)
 			}
 			//ne passe pas la première fois, code non réalisé + p-e refaire code sans pipe quand il n'y en a pas
 			
-			//A FAIRE voir avec stderr, s'il y a quelque chose à faire + autres redirections
 			if(c->redirect[i-1][STDOUT]!=NULL)
 			{
 				int fd2=0;
@@ -95,6 +94,30 @@ int exec_cmd(cmd * c)
 					exit(errno); 
 				}
 				close(fd2);
+			}
+			if (c->redirect[i-1][STDERR]!=NULL)
+			{
+				int fd3=0;
+				if(c->type_redirect[i-1][STDERR]==NRAPPEND)
+				{
+					fd3=open(c->redirect[i-1][STDERR],O_RDWR|O_TRUNC|O_CREAT, S_IRWXU);
+					if(fd3==-1)
+						printf("Erreur \n");
+				}
+				else if (c->type_redirect[i-1][STDERR]==RAPPEND)
+				{
+					fd3=open(c->redirect[i-1][STDERR],O_RDWR| O_APPEND);
+					if(fd3==-1)
+						printf("Erreur \n");
+				}	
+ 
+				if(dup2(fd3, 2) == -1)
+				{ 
+					perror("dup2"); 
+					exit(errno); 
+				}
+				close(fd3);
+			
 			}
 			if (c->nb_membres>1)
 			{		
