@@ -13,19 +13,19 @@ void alarmHandler()
 
 int exec_cmd(cmd * c)
 {
-	int ** tube;
+	int ** tube;//peut-etre a mettre ailleurs
 	unsigned int i=0,j;
 	
 	if (c->nb_membres==0)
 		return -1;
-	//allocation d'un tableau de ptrs
+	//allocation d'un tableau de ptrs --> a revoir, pas necessaire si pas de pipe
 	tube=(int **)malloc(sizeof(int*)*c->nb_membres-1);
 	if(tube==NULL)
 	{
 		perror("allocation raté // tube");
 		exit(EXIT_FAILURE);
 	}
-	//allocation d'un tableau de 2 cases pour chaque ptr
+	//allocation d'un tableau de 2 cases pour chaque ptr --> a revoir pas nécessaire si pas de pipe
 	for(j=0;j<c->nb_membres;j++)
 	{
 		tube[j]=(int *)malloc(2*sizeof(int));
@@ -73,14 +73,22 @@ int exec_cmd(cmd * c)
 			//A FAIRE voir avec stderr, s'il y a quelque chose à faire + autres redirections
 			if(c->redirect[i-1][STDOUT]!=NULL)
 			{
-				int fd2;
+				int fd2=0;
 				//le fichier crée est utilisable en lecture/ecriture/execution
 				//Le fichier est effacé en entier a son ouverture --> O_TRUNC
-				fd2=open(c->redirect[i-1][STDOUT],O_RDWR|O_TRUNC|O_CREAT, S_IRWXU);
-				if(fd2==-1)
-					printf("Erreur \n");
-	
-				//aide fichier : 
+				if(c->type_redirect[i-1][STDOUT]==NRAPPEND)
+				{
+					fd2=open(c->redirect[i-1][STDOUT],O_RDWR|O_TRUNC|O_CREAT, S_IRWXU);
+					if(fd2==-1)
+						printf("Erreur \n");
+				}
+				else if (c->type_redirect[i-1][STDOUT]==RAPPEND)
+				{
+					fd2=open(c->redirect[i-1][STDOUT],O_RDWR| O_APPEND);
+					if(fd2==-1)
+						printf("Erreur \n");
+				}	
+ 
 				if(dup2(fd2, 1) == -1)
 				{ 
 					perror("dup2"); 
@@ -106,7 +114,8 @@ int exec_cmd(cmd * c)
 			}
 			if((execvp(c->cmd_args[i-1][0], c->cmd_args[i-1]))==-1)
 			{
-				perror("execvp");
+				//perror("execvp");
+				printf("Commande inconnue \n");
 				exit(errno);
 			}
 			return 0;

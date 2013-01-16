@@ -174,7 +174,7 @@ void aff_args(cmd *c){
 		nbArgs=0;
 		printf("nombre d'arguments pour le membre %d: %d\n",nbMembres,  c->nb_args_membres[nbMembres]);
 		while(nbArgs < c->nb_args_membres[nbMembres]+1){
-			printf("\targument n°%d du menbre n°%d: %s\n", nbArgs, nbMembres, c->cmd_args[nbMembres][nbArgs]);
+			printf("\targument n°%d du membre n°%d: %s\n", nbArgs, nbMembres, c->cmd_args[nbMembres][nbArgs]);
 			nbArgs++;
 		}
 		nbMembres++;
@@ -202,57 +202,87 @@ void free_args(cmd *c){
 
 
 void parse_redirect(cmd *c){
-	unsigned int i = 0, redirection = 0;
-	char * cTmp=NULL, * ptrRedir=NULL, * cTok=NULL;
+	unsigned int i = 0;
+	char * cTmp=NULL, /* * ptrRedir=NULL,*/ * cTok=NULL;
 	
-	//Allocation de C->redirect
+	//Allocation de c->redirect
 	if(c->redirect==NULL){
 		c->redirect = (char ***) malloc(sizeof(char **) * c->nb_membres);
 		if(c->redirect==NULL){
-			perror("allocation raté // parse_redirect");
+			perror("allocation raté // redirect");
 			exit(EXIT_FAILURE);
 		}
 	}
 
+	//Allocation des type_redirect 
+	if(c->type_redirect==NULL){
+		c->type_redirect = (int **) malloc(sizeof(int *) * c->nb_membres);
+		if(c->type_redirect==NULL){
+			perror("allocation raté // type_redirect");
+			exit(EXIT_FAILURE);
+		}
+	}	
+
 	for(i=0; i < c->nb_membres; i++){
 
+		//Allocation de redirect[]		
 		c->redirect[i] = (char **) malloc(sizeof(char *) * 3);
 		if(c->redirect[i]==NULL){
 			perror("allocation raté // parse_redirect");
 			exit(EXIT_FAILURE);
 		}
+	
+		//Allocation de type_redirect[]		
+		c->type_redirect[i] = (int *) malloc(sizeof(int) * 3);
+		if(c->type_redirect[i]==NULL){
+			perror("allocation raté // type_direct");
+			exit(EXIT_FAILURE);
+		}
+
+		//obligation de tout allouer
 		//A NULL PAR DEFAUT
-		c->redirect[i][STDIN ]=NULL;
+		c->redirect[i][STDIN]=NULL;
 		c->redirect[i][STDOUT]=NULL;
 		c->redirect[i][STDERR]=NULL;
+		//NRAPPEND valeur 0
+		c->type_redirect[i][STDIN]=NRAPPEND;
+		c->type_redirect[i][STDOUT]=NRAPPEND;
+		c->type_redirect[i][STDERR]=NRAPPEND;
+
 
 		stringCopy(&cTok, c->cmd_membres[i]);
 		cTmp = strtok(cTok, " ");
-
-		redirection=0;
+		
 
 		while( cTmp != NULL){
-			if( i == 0 && index(cTmp, '<') != NULL ){ // test si redirection de l'entrée standard
+			//on garde i=0
+			if( i == 0 && strcmp(cTmp, "<") ==0 ){ // test si redirection de l'entrée standard
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDIN]), cTmp);
-				//redirection = 1;
 			}
-			else if( i==c->nb_membres-1 &&  index(cTmp, '>') != NULL ){ // test si redirection de la sortie standard
+			else if( i==c->nb_membres-1 &&  strcmp(cTmp, ">") == 0){ // test si redirection de la sortie standard
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDOUT]), cTmp);
-				//redirection = 1;
 			}
-			else if( i==c->nb_membres-1 && (ptrRedir = index(cTmp, '2')) != NULL && ptrRedir[1] == '>'){ // test si redirection de la sortie d'erreur
+			/*else if( i==c->nb_membres-1 && (ptrRedir = index(cTmp, '2')) != NULL && ptrRedir[1] == '>'){ // test si redirection de la sortie d'erreur
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDERR]), cTmp);
-				//redirection = 1;
+			}*/
+			else if(strcmp(cTmp,">>")==0)
+			{
+				cTmp = strtok(NULL, " ");
+				stringCopy( &(c->redirect[i][STDOUT]), cTmp);
+				c->type_redirect[i][STDOUT]=RAPPEND;
 			}
-
+			
 			cTmp = strtok(NULL, " ");
 		}
 		free(cTok);
 	}
 }
+
+
+
 
 void aff_redirect(cmd *c){
 	unsigned int numRedirection=0;
@@ -264,6 +294,11 @@ void aff_redirect(cmd *c){
 		printf("\t\t entrée standard : %s\n", c->redirect[numRedirection][STDIN ]);
 		printf("\t\t sortie standard : %s\n", c->redirect[numRedirection][STDOUT]);
 		printf("\t\t sortie erreur   : %s\n", c->redirect[numRedirection][STDERR]);
+		
+		printf("\t\t entrée standard : redirection %d\n", c->type_redirect[numRedirection][STDIN ]);
+		printf("\t\t sortie standard : redirection %d\n", c->type_redirect[numRedirection][STDOUT]);
+		printf("\t\t sortie erreur   : redirection %d\n", c->type_redirect[numRedirection][STDERR]);	
+		
 
 		numRedirection++;
 	}
@@ -284,5 +319,13 @@ void free_redirect(cmd * c){
 			}
 		}
 		free(c->redirect);
+	}
+	if(c->type_redirect!=NULL){
+		for(i=0; i< c->nb_membres; i++){
+			if(c->type_redirect[i]!=NULL){
+				free(c->type_redirect[i]);
+			}
+		}
+		free(c->type_redirect);
 	}
 }
