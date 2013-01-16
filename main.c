@@ -26,7 +26,7 @@ int main(void)
 		infos=getpwuid(getuid());
 		gethostname(hostname, 256);
 		getcwd(workingdirectory, 256);
-		//met dans la variable str, les infos puis la suite à myshell
+		//met dans la variable str, les infos à la suite de myshell
 		sprintf(str, "\n{myshell}%s@%s:%s$ ", infos->pw_name, hostname, workingdirectory);
 
 		readlineptr = readline(str);
