@@ -25,6 +25,7 @@ void initCMD(cmd * c){
 	c->nb_args_membres = NULL;
 	c->redirect = NULL;
 	c->type_redirect = NULL;
+	c->distant = NULL;
 }
 
 
@@ -104,6 +105,7 @@ void parse_args(cmd *c){
 		exit(EXIT_FAILURE);
 	}
 
+	//allocation du tableau de nombre d'arguments
 	c->nb_args_membres = (unsigned int *) malloc(sizeof(unsigned int)*c->nb_membres);
 	if(c->nb_args_membres==NULL)
 	{
@@ -111,6 +113,7 @@ void parse_args(cmd *c){
 		exit(EXIT_FAILURE);
 	}
 
+	// parcours des membres
 	for(i=0; i < c->nb_membres; i++)
 	{
 		j=0;
@@ -120,6 +123,7 @@ void parse_args(cmd *c){
 			exit(EXIT_FAILURE);
 		}
 
+		// découpage du membres
 		stringCopy(&cTok, c->cmd_membres[i]);
 		cTmp = strtok(cTok, " ");
 
@@ -135,12 +139,15 @@ void parse_args(cmd *c){
 
 			// affectation
 			c->cmd_args[i][j] = NULL;
-			// test si l'argument est une redirection (si oui ->  enregistre NULL)
+			// test si l'argument est une redirection ou une connexion distante(si oui ->  enregistre NULL)
 			if( (i== 0 && index(cTmp, '<') != NULL) ){
 				redirection = 1;
 			}
 			else if( (i==(c->nb_membres-1) && index(cTmp, '>') != NULL) ){
 				redirection = 1;
+			}
+			else if(strstr(cTmp, "s:")!=NULL){
+
 			}
 			else{
 				stringCopy(&(c->cmd_args[i][j]), cTmp);
@@ -282,5 +289,75 @@ void free_redirect(cmd * c){
 			}
 		}
 		free(c->redirect);
+	}
+}
+
+
+void parse_distant(cmd *c){
+	unsigned int i = 0;
+	char * str, * cTok, * cTmp;
+	if(c->distant==NULL){
+		c->distant = (char ***) malloc(sizeof(char **) * c->nb_membres);
+		if(c->distant==NULL){
+			perror("allocation raté // parse_distant");
+			exit(EXIT_FAILURE);
+		}
+
+		for(i = 0; i<c->nb_membres; i++){
+// 			c->distant[i] = NULL;
+			c->distant[i] = (char **) malloc(sizeof(char *) * 2);
+			if(c->distant[i]==NULL){
+				perror("allocation raté // parse_distant");
+				exit(EXIT_FAILURE);
+			}
+
+			str = strstr(c->cmd_membres[i], "s:");
+
+			if(str!= NULL){
+
+				stringCopy(&cTok, c->cmd_membres[i]);
+				cTmp = strtok(cTok, ":");
+				cTmp = strtok(NULL, ":");
+				stringCopy(&(c->distant[i][0]), cTmp);
+				cTmp = strtok(NULL, " ");
+				stringCopy(&(c->distant[i][1]), cTmp);
+				free(cTok);
+			}else{
+				c->distant[i][0] = NULL;
+				c->distant[i][1] = NULL;
+			}
+		}
+	}
+}
+
+void aff_distant(cmd *c){
+	unsigned int i = 0;
+
+	printf("connexion distante : \n");
+
+	for(i=0; i<c->nb_membres; i++){
+		printf("\tmembre : %d\n", i);
+
+		printf("\t\t adresse serveur : %s\n", c->distant[i][0]);
+		printf("\t\t port serveur    : %s\n", c->distant[i][1]);
+
+	}
+	printf("\n");
+}
+
+void free_distant(cmd *c){
+	unsigned int i, j;
+	if(c->distant!=NULL){
+		for(i=0; i< c->nb_membres; i++){
+			if(c->distant[i]!=NULL){
+				for(j=0; j<2; j++){
+					if(c->distant[i][j]!=NULL){
+						free(c->distant[i][j]);
+					}
+				}
+				free(c->distant[i]);
+			}
+		}
+		free(c->distant);
 	}
 }

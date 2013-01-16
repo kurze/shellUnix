@@ -33,11 +33,13 @@ void client(void){
 		parse_membres(readlineptr, mycmd);
 		parse_args(mycmd);
 		parse_redirect(mycmd);
+		parse_distant(mycmd);
 
 #ifdef DEBUG_FLAG
 		aff_membres(mycmd);
 		aff_args(mycmd);
 		aff_redirect(mycmd);
+		aff_distant(mycmd);
 #endif
 
 		exec_cmd(mycmd);
@@ -48,6 +50,7 @@ void client(void){
 		//..........
 		free(buf);
 		free(readlineptr);
+		free_distant(mycmd);
 		free_redirect(mycmd);
 		free_args(mycmd);
 		free_membres(mycmd);

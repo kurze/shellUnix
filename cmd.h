@@ -17,6 +17,7 @@ typedef struct commande {
 	unsigned int *nb_args_membres;	/* Nombre d'arguments par membres */
 	char ***redirect;				/* Pour stocker le chemin vers le fichier de redirection */
 	int **type_redirect;			/* Pour stocker le type de rediction */
+	char ***distant;					/* Pour stocker les connexion distante */
 } cmd;
 
 void initCMD(cmd * c);
@@ -24,13 +25,16 @@ void initCMD(cmd * c);
 void aff_args(cmd *c);
 void aff_membres(cmd *c);
 void aff_redirect(cmd *c);
+void aff_distant(cmd *c);
 
 void free_args(cmd *c);
 void free_membres(cmd *c);
 void free_redirect(cmd *c);
+void free_distant(cmd *c);
 
 void parse_args(cmd *c);
 void parse_membres(char *chaine,cmd *c);
 void parse_redirect(cmd *c);
+void parse_distant(cmd *c);
 
 #endif
