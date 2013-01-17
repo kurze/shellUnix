@@ -13,10 +13,13 @@ void alarmHandler()
 
 int exec_cmd(cmd * c)
 {
-	unsigned int i=0;
-	int ** tube;
-	
-	tube=(int **)malloc(sizeof(int*)*(c->nb_membres-1));
+	int ** tube;//peut-etre a mettre ailleurs
+	unsigned int i=0,j;
+
+	if (c->nb_membres==0)
+		return -1;
+	//allocation d'un tableau de ptrs --> a revoir, pas necessaire si pas de pipe
+	tube=(int **)malloc(sizeof(int*)*c->nb_membres-1);
 	if(tube==NULL)
 	{
 		perror("allocation raté // tube");
@@ -128,12 +131,19 @@ int exec_cmd(cmd * c)
 					close(tube[i-1][1]);
 				}
 			}
-			if((execvp(c->cmd_args[i-1][0], c->cmd_args[i-1]))==-1)
-			{
-				//perror("execvp");
-				printf("Commande inconnue \n");
-				exit(errno);
-			}
+			if(c->cmd_args[i-1][0]!=NULL){ // execution locale
+				if((execvp(c->cmd_args[i-1][0], c->cmd_args[i-1]))==-1)
+				{
+					perror("Commande inconnue \n");
+					exit(errno);
+				}
+			}else{ // cas de connexion distante
+				if((execvp(c->cmd_args[i-1][1], &(c->cmd_args[i-1][1])))==-1)
+				{
+					perror("Commande inconnue \n");
+					exit(errno);
+				}
+
 			return 0;
 		}
 				

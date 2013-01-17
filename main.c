@@ -4,61 +4,24 @@
 #include <pwd.h>
 #include "shell_fct.h"
 #include "constante.h"
-#include "cmd.h"
+#include <pthread.h>
 
-int main(void)
-{
-	int ret = MYSHELL_CMD_OK;
-	cmd * mycmd;
-	char* readlineptr;
-	struct passwd* infos;
-	char str[1024];
-	char hostname[256];
-	char workingdirectory[256];
-	char *buf;
+#include "client.h"
 
-	while(ret != MYSHELL_FCT_EXIT)
-	{
-		mycmd = (cmd *) malloc(sizeof(cmd) * 1);
-		initCMD(mycmd);
+int main(int argc, char** argv){
 
-		//rl_bind_key('\t',rl_abort);//disable auto-complete
-		infos=getpwuid(getuid());
-		gethostname(hostname, 256);
-		getcwd(workingdirectory, 256);
-		//met dans la variable str, les infos à la suite de myshell
-		sprintf(str, "\n{myshell}%s@%s:%s$ ", infos->pw_name, hostname, workingdirectory);
-
-		readlineptr = readline(str);
-		//on garde en mémoire la commande
-		buf=(char *)malloc (sizeof(char)*(strlen(readlineptr)+1));
-		strcpy(buf,readlineptr);
-
-		parse_membres(readlineptr, mycmd);
-		parse_args(mycmd);
-		parse_redirect(mycmd);
-
-//ifdef DEBUG_FLAG
-		aff_membres(mycmd);
-		aff_args(mycmd);
-		aff_redirect(mycmd);
-//endif
-
-		exec_cmd(mycmd);
-		//on regarde si la chaine est vide ou non, et s'il est nécessaire de l'ajouter à l'historique
-		if (strcmp(buf,""))
-			add_history(buf);
-
-	//..........
-	free(buf);
-	free(readlineptr);
-	free_redirect(mycmd);
-	free_args(mycmd);
-	free_membres(mycmd);
-	free(mycmd);
-	//..........
-
+	pthread_t threadClient; /*threadServeur;*/
+	if(argc!=2 || atoi(argv[1])<1 || atoi(argv[1])>65535){
+		printf("./myshell <numéro de port d'écoute>\n\
+				\tnuméro de port compris entre 1024 et 65535\n");
+		exit(1);
 	}
-	//..........
+
+	if(pthread_create(&threadClient, NULL, (void *)client, NULL)){
+		perror("erreur de création de thread\n");
+		exit(1);
+	}
+	pthread_join(threadClient, NULL);
+
 	return 0;
 }

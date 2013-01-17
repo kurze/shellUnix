@@ -5,16 +5,16 @@ CFLAGS=-Wall -Wextra
 DEBUG=0
 
 ifeq ($(DEBUG), 1)
-	CFLAGS+=-g -DDEBUG_FLAG -O0
+	CFLAGS+= -g -DDEBUG_FLAG -O0
 else
-	CFLAGS+=-O3
+	CFLAGS+= -O3
 endif
 
-all:$(EXEC)
+all:$(EXEC) $(EXEC)
 
 rebuild : clean all
 
-$(EXEC): main.o cmd.o shell_fct.o
+$(EXEC): cmd.o shell_fct.o client.o main.o
 	$(CC) -o $(EXEC) $^ $(LDFLAGS)
 
 %.o: %.c
