@@ -2,10 +2,10 @@
 #include <string.h>
 #include <sys/types.h>
 #include <pwd.h>
-#include "shell_fct.h"
-#include "constante.h"
 #include <pthread.h>
 
+#include "shell_fct.h"
+#include "constante.h"
 #include "client.h"
 
 int main(int argc, char** argv){
