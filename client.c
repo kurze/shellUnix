@@ -82,14 +82,14 @@ int connexionServeur(char * adresseIP, char * port){
 //
 	// creation de la socket
 	if((sock = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
-		perror("socket");
+		perror("erreur de création de la socket client");
 		return -1;
 	}
 
 
-	// demande de connxion au serveur
+	// demande de connexion au serveur
 	if(connect(sock, (struct sockaddr *)(&adrServ), sizeof(adrServ)) == -1) {
-		perror("connect");
+		perror("erreur de connexion à la socket serveur");
 		return -1;
 	}
 
