@@ -6,7 +6,7 @@ pid_t pid;
 
 //fonction chien de garde
 void alarmHandler()
-{	
+{
 		printf("Processus fils trop long : Arrêt forcé du processus fils\n");
 		kill(pid, SIGKILL);
 }
@@ -50,26 +50,26 @@ int exec_cmd(cmd * c)
 				exit(errno);
 			}
 		}
-		
+
 		pid = fork();
-		//code du processus fils		
+		//code du processus fils
 		if(pid == 0)
-		{	
+		{
 			if(c->redirect[i-1][STDIN]!=NULL)
 			{
-				int fd;				
+				int fd;
 				fd=open(c->redirect[i-1][STDIN], O_RDONLY);
 				if(fd==-1)
 					printf("Erreur \n");
 				if(dup2(fd, 0) == -1)
-				{ 
-					perror("dup2"); 
-					exit(errno); 
+				{
+					perror("dup2");
+					exit(errno);
 				}
 				close(fd);
 			}
 			//ne passe pas la première fois, code non réalisé + p-e refaire code sans pipe quand il n'y en a pas
-			
+
 			if(c->redirect[i-1][STDOUT]!=NULL)
 			{
 				int fd2=0;
@@ -86,12 +86,12 @@ int exec_cmd(cmd * c)
 					fd2=open(c->redirect[i-1][STDOUT],O_RDWR| O_APPEND);
 					if(fd2==-1)
 						printf("Erreur \n");
-				}	
- 
+				}
+
 				if(dup2(fd2, 1) == -1)
-				{ 
-					perror("dup2"); 
-					exit(errno); 
+				{
+					perror("dup2");
+					exit(errno);
 				}
 				close(fd2);
 			}
@@ -109,18 +109,18 @@ int exec_cmd(cmd * c)
 					fd3=open(c->redirect[i-1][STDERR],O_RDWR| O_APPEND);
 					if(fd3==-1)
 						printf("Erreur \n");
-				}	
- 
+				}
+
 				if(dup2(fd3, 2) == -1)
-				{ 
-					perror("dup2"); 
-					exit(errno); 
+				{
+					perror("dup2");
+					exit(errno);
 				}
 				close(fd3);
-			
+
 			}
 			if (c->nb_membres>1)
-			{		
+			{
 				if (i>1)
 				{
 					close(tube[i-2][1]);
@@ -147,28 +147,28 @@ int exec_cmd(cmd * c)
 					perror("Commande inconnue \n");
 					exit(errno);
 				}
-
+			}
 			return 0;
 		}
-				
+
 		if(i>1)
 		{
 			close(tube[i-2][0]);
 			close(tube[i-2][1]);
 		}
-		
+
 	}
 	//code du processus pere
 	signal(SIGALRM, alarmHandler);
-	
+
 	//déclenchement de l'alarme
 	alarm(10);
 
 	for (i=1;i<=c->nb_membres;i++)
 		wait(NULL);
-	
+
 	//fin de l'execution du processus fils, on annule l'alarme
-	alarm(0);	
+	alarm(0);
 	//desallocation
 	for(j=0;j<c->nb_membres;j++)
 	{
