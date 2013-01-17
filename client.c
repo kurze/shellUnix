@@ -60,3 +60,38 @@ void client(void){
 	}
 	//..........
 }
+
+int connexionServeur(char * adresseIP, char * port){
+	struct sockaddr_in adrServ;
+// 	struct pollfd pol[2];
+	int sock=0;
+
+
+	inet_aton(adresseIP, &adrServ.sin_addr);
+	adrServ.sin_family = AF_INET;
+	adrServ.sin_port = htons(atoi(port));
+	bzero(&(adrServ.sin_zero), 8);
+
+	// param de l'attente de réponse
+// 	pol[0].fd = 0;
+// 	pol[0].events = POLLIN;
+// 	pol[0].revents = 0;
+// 	pol[1].fd = sock;
+// 	pol[1].events = POLLIN;
+// 	pol[1].revents = 0;
+//
+	// creation de la socket
+	if((sock = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+		perror("socket");
+		return -1;
+	}
+
+
+	// demande de connxion au serveur
+	if(connect(sock, (struct sockaddr *)(&adrServ), sizeof(adrServ)) == -1) {
+		perror("connect");
+		return -1;
+	}
+
+	return sock;
+}
