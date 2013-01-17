@@ -13,28 +13,20 @@ void alarmHandler()
 
 int exec_cmd(cmd * c)
 {
-	int ** tube;//peut-etre a mettre ailleurs
-	unsigned int i=0,j;
+	unsigned int i=0;
+	int ** tube;
 	
-	if (c->nb_membres==0)
-		return -1;
-	//allocation d'un tableau de ptrs --> a revoir, pas necessaire si pas de pipe
-	tube=(int **)malloc(sizeof(int*)*c->nb_membres-1);
+	tube=(int **)malloc(sizeof(int*)*(c->nb_membres-1));
 	if(tube==NULL)
 	{
 		perror("allocation raté // tube");
 		exit(EXIT_FAILURE);
 	}
-	//allocation d'un tableau de 2 cases pour chaque ptr --> a revoir pas nécessaire si pas de pipe
-	for(j=0;j<c->nb_membres;j++)
-	{
-		tube[j]=(int *)malloc(2*sizeof(int));
-		if(tube[j]==NULL)
-		{
-			perror("allocation raté // tube[j]");
-			exit(EXIT_FAILURE);
-		}
-	}
+	
+	if ((strcmp(c->cmd_initial,"exit"))==0)
+		exit(0);
+	if (c->nb_membres==0)
+		return -1;
 
 	while(i<c->nb_membres)
 	{
@@ -42,13 +34,14 @@ int exec_cmd(cmd * c)
 		//quand i sera à 3, on ne fait plus le pipe
 		if (i<c->nb_membres && c->nb_membres>1)
 		{
-			int valpipe;
-			valpipe=pipe(tube[i-1]);
-			if(valpipe==-1)
+			tube[i-1]=(int *)malloc(2*sizeof(int));
+			if(tube[i-1]==NULL)
 			{
-				perror("pipe raté");
-				exit(errno);
+				perror("allocation raté // tube[i]");
+				exit(EXIT_FAILURE);
 			}
+			pipe(tube[i-1]);
+
 		}
 		
 		pid = fork();
@@ -163,11 +156,14 @@ int exec_cmd(cmd * c)
 	//fin de l'execution du processus fils, on annule l'alarme
 	alarm(0);	
 	//desallocation
-	for(j=0;j<c->nb_membres;j++)
-	{
-		free(tube[j]);
+	if(c->nb_membres>1)
+	{	
+		for(i=0;i<c->nb_membres-1;i++)
+		{
+			free(tube[i]);
+		}
+		free(tube);
 	}
-	free(tube);
 	return 0;
 }
 
