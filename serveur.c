@@ -27,7 +27,7 @@ void serveur(int port){
 
 	while(1){
 		taille = sizeof(struct sockaddr_in);
-		fdSocket ) accept(idSocket, &adrSocket, &taille);
+		fdSocket = accept(idSocket, &adrSocket, &taille);
 		// traiter la connexion
 	}
 	/*

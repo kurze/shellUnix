@@ -7,7 +7,6 @@
 #include <pthread.h>
 
 #include "client.h"
-#include "serveur.h"
 
 int main(int argc, char** argv){
 
