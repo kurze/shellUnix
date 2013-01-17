@@ -14,7 +14,7 @@ void alarmHandler()
 int exec_cmd(cmd * c)
 {
 	int ** tube;//peut-etre a mettre ailleurs
-	unsigned int i=0,j;
+	unsigned int i=0;
 
 	if (c->nb_membres==0)
 		return -1;
@@ -25,7 +25,7 @@ int exec_cmd(cmd * c)
 		perror("allocation raté // tube");
 		exit(EXIT_FAILURE);
 	}
-	
+
 	if ((strcmp(c->cmd_initial,"exit"))==0)
 		exit(0);
 	if (c->nb_membres==0)
@@ -167,7 +167,7 @@ int exec_cmd(cmd * c)
 	alarm(0);
 	//desallocation
 	if(c->nb_membres>1)
-	{	
+	{
 		for(i=0;i<c->nb_membres-1;i++)
 		{
 			free(tube[i]);
