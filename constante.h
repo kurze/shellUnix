@@ -8,4 +8,6 @@
 #define STDOUT 1
 #define STDERR 2
 
+#define RAPPEND 1
+#define NRAPPEND 0
 #endif
