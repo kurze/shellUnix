@@ -38,11 +38,11 @@ int main(void)
 		parse_args(mycmd);
 		parse_redirect(mycmd);
 
-//#ifdef DEBUG_FLAG
+//ifdef DEBUG_FLAG
 		aff_membres(mycmd);
 		aff_args(mycmd);
 		aff_redirect(mycmd);
-//#endif
+//endif
 
 		exec_cmd(mycmd);
 		//on regarde si la chaine est vide ou non, et s'il est nécessaire de l'ajouter à l'historique
