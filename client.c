@@ -76,14 +76,6 @@ int connexionServeur(char * adresseIP, char * port){
 	adrServ.sin_port = htons(atoi(port));
 	bzero(&(adrServ.sin_zero), 8);
 
-	// param de l'attente de réponse
-// 	pol[0].fd = 0;
-// 	pol[0].events = POLLIN;
-// 	pol[0].revents = 0;
-// 	pol[1].fd = sock;
-// 	pol[1].events = POLLIN;
-// 	pol[1].revents = 0;
-//
 	// creation de la socket
 	if((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		perror("erreur de création de la socket client");
