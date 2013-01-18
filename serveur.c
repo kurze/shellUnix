@@ -74,9 +74,15 @@ void serveur(char * port){
 
 void executionCommande(int fdSocket){
 	char commande[256];
+
+	cmd * mycmd;
+	mycmd = (cmd *) malloc(sizeof(cmd) * 1);
+	initCMD(mycmd);
+
 	if(recv(fdSocket, commande, 256, 0) == -1){
 		perror("erreur lors de la réception de la commande");
 		return;
 	}
 	printf("%s\n", commande);
+	executerCommande(commande, mycmd);
 }

@@ -10,6 +10,8 @@
 #include <signal.h>
 #include <pthread.h>
 
+#include "client.h"
+
 /*
 
 #include <errno.h>

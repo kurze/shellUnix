@@ -30,35 +30,39 @@ void client(void){
 		buf=(char *)malloc (sizeof(char)*(strlen(readlineptr)+1));
 		strcpy(buf,readlineptr);
 
-		parse_membres(readlineptr, mycmd);
-		parse_args(mycmd);
-		parse_redirect(mycmd);
-		parse_distant(mycmd);
-
-#ifdef DEBUG_FLAG
-		aff_membres(mycmd);
-		aff_args(mycmd);
-		aff_redirect(mycmd);
-		aff_distant(mycmd);
-#endif
-
-		exec_cmd(mycmd);
-		//on regarde si la chaine est vide ou non, et s'il est nécessaire de l'ajouter à l'historique
-		if (strcmp(buf,""))
-			add_history(buf);
-
-		//..........
+		executerCommande(buf, mycmd);
 		free(buf);
 		free(readlineptr);
-		free_distant(mycmd);
-		free_redirect(mycmd);
-		free_args(mycmd);
-		free_membres(mycmd);
-		free(mycmd);
-		//..........
-
 	}
 	//..........
+}
+
+void executerCommande(char * commande, cmd * mycmd){
+	parse_membres(commande, mycmd);
+	parse_args(mycmd);
+	parse_redirect(mycmd);
+	parse_distant(mycmd);
+
+#ifdef DEBUG_FLAG
+	aff_membres(mycmd);
+	aff_args(mycmd);
+	aff_redirect(mycmd);
+	aff_distant(mycmd);
+#endif
+
+	exec_cmd(mycmd);
+	//on regarde si la chaine est vide ou non, et s'il est nécessaire de l'ajouter à l'historique
+	if (strcmp(commande,""))
+		add_history(commande);
+
+	//..........
+	free_distant(mycmd);
+	free_redirect(mycmd);
+	free_args(mycmd);
+	free_membres(mycmd);
+	free(mycmd);
+	//..........
+
 }
 
 int connexionServeur(char * adresseIP, char * port){
@@ -101,12 +105,12 @@ void envoieCommande(int socket, char ** commande){
 	unsigned int i= 0;
 	unsigned int ptr=0;
 	while(commande[i]!=NULL && ptr<256){
-		printf("\n\n----> %s <----\n\n", commande[i]);
+		printf("\n----> %s <----", commande[i]);
 		strcpy(&(com[ptr]), commande[i]);
-		ptr = ptr + sizeof(commande[i]);
+		ptr = ptr + strlen(commande[i]);
 		i++;
 	}
-	printf("\n\n----> %s <----\n\n", com);
+	printf("\n\n------> %s <------\n\n", com);
 	if(send(socket, com, 256, 0) == -1){
 		perror("erreur d'envoi de la commande");
 	}
