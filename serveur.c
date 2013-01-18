@@ -1,24 +1,25 @@
 #include "serveur.h"
 
 
-void serveur(int port){
+void serveur(char * port){
 
 	struct sockaddr_in adrSocket;
+	pthread_t thread;
 	int idSocket;
 	int fdSocket;
-	int taille;
+	unsigned int taille;
 
 	// crée la socket
-	ifSocket = socket(AF_INET, SOCK_STREAM,0);
+	idSocket = socket(AF_INET, SOCK_STREAM,0);
 
 	//configure la socket
-	adrSocket.sin_family = AF_UNIX;
-	adrSocket.sin_port = htons(1234);
-	adrSocket.sin_add_.s_addr(htonl(INADDR_ANY);
+	adrSocket.sin_family = AF_INET;
+	adrSocket.sin_port = htons(atoi(port));
+	adrSocket.sin_addr.s_addr = INADDR_ANY;
 
 
 	// nomme la socket
-	if(bind(idSocket, &adrSocket, sizeof(adrSocket)) == -1){
+	if(bind(idSocket, (struct sockaddr *)(&adrSocket), sizeof(adrSocket)) == -1){
 
 	}
 
@@ -27,8 +28,12 @@ void serveur(int port){
 
 	while(1){
 		taille = sizeof(struct sockaddr_in);
-		fdSocket = accept(idSocket, &adrSocket, &taille);
+		fdSocket = accept(idSocket, (struct sockaddr *)(&adrSocket), &taille);
 		// traiter la connexion
+		if(pthread_create(&thread, NULL, (void *)executionCommande, (void *)fdSocket)){
+		perror("erreur de création de thread\n");
+		exit(1);
+	}
 	}
 	/*
 	while(strcmp(commande, "fin")){
@@ -67,3 +72,11 @@ void serveur(int port){
 	*/
 }
 
+void executionCommande(int fdSocket){
+	char commande[256];
+	if(recv(fdSocket, commande, 256, 0) == -1){
+		perror("erreur lors de la réception de la commande");
+		return;
+	}
+	printf("%s\n", commande);
+}

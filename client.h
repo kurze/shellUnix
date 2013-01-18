@@ -17,5 +17,6 @@
 
 void client(void);
 int connexionServeur(char * adresseIP, char * port);
+void envoieCommande(int socket, char ** commande);
 
 #endif

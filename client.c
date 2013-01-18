@@ -81,7 +81,7 @@ int connexionServeur(char * adresseIP, char * port){
 // 	pol[1].revents = 0;
 //
 	// creation de la socket
-	if((sock = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+	if((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		perror("erreur de création de la socket client");
 		return -1;
 	}
@@ -94,4 +94,20 @@ int connexionServeur(char * adresseIP, char * port){
 	}
 
 	return sock;
+}
+
+void envoieCommande(int socket, char ** commande){
+	char com[256];
+	unsigned int i= 0;
+	unsigned int ptr=0;
+	while(commande[i]!=NULL && ptr<256){
+		printf("\n\n----> %s <----\n\n", commande[i]);
+		strcpy(&(com[ptr]), commande[i]);
+		ptr = ptr + sizeof(commande[i]);
+		i++;
+	}
+	printf("\n\n----> %s <----\n\n", com);
+	if(send(socket, com, 256, 0) == -1){
+		perror("erreur d'envoi de la commande");
+	}
 }

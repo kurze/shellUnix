@@ -5,14 +5,18 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <linux/in.h>
+#include <arpa/inet.h>
+// #include <linux/in.h>
 #include <signal.h>
+#include <pthread.h>
+
 /*
-#include <netinet/in.h>
+
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
 */
-void serveur(int port);
+void serveur(char * port);
+void executionCommande(int fdsocket);
 
 #endif
