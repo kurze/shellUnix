@@ -105,12 +105,14 @@ void envoieCommande(int socket, char ** commande){
 	unsigned int i= 0;
 	unsigned int ptr=0;
 	while(commande[i]!=NULL && ptr<256){
-		printf("\n----> %s <----", commande[i]);
+// 		printf("\n----> %s <----", commande[i]);
 		strcpy(&(com[ptr]), commande[i]);
 		ptr = ptr + strlen(commande[i]);
+		strcpy(&(com[ptr]), " ");
+		ptr = ptr + 1;
 		i++;
 	}
-	printf("\n\n------> %s <------\n\n", com);
+// 	printf("\n\n------> %s <------\n\n", com);
 	if(send(socket, com, 256, 0) == -1){
 		perror("erreur d'envoi de la commande");
 	}
