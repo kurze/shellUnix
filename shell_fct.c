@@ -11,21 +11,76 @@ void alarmHandler()
 		kill(pid, SIGKILL);
 }
 
+void redirection(char valeur[7], char nomFichier[1024], int type)
+{
+	int fd;
+	// redirection <
+	if (strcmp(valeur, "STDIN")==0)
+	{
+		fd=open(nomFichier, O_RDONLY);
+		if(fd==-1)
+			printf("Erreur \n");
+		if(dup2(fd, 0) == -1)
+		{
+			perror("dup2");
+			exit(errno);
+		}
+		close(fd);
+	}
+	//meme cas pour stdout et stderr, sauf redirection
+	else if (strcmp(valeur,"STDOUT")==0 || strcmp(valeur,"STDERR")==0)
+	{	
+		//redirection > ou 2>
+		if(type==0)
+		{
+			fd=open(nomFichier,O_RDWR|O_TRUNC|O_CREAT, S_IRWXU);
+			if(fd==-1)
+				printf("Erreur \n");
+		}
+		//redirection >> ou 2>>
+		else if (type==1)
+		{
+			fd=open(nomFichier,O_RDWR| O_APPEND);
+			if(fd==-1)
+				printf("Erreur \n");
+		}
+		if (strcmp(valeur,"STDOUT")==0)
+		{
+			if(dup2(fd, 1) == -1)
+			{
+				perror("dup2");
+				exit(errno);
+			}
+		}
+		else
+		{
+			if(dup2(fd, 2) == -1)
+			{
+				perror("dup2");
+				exit(errno);
+			}
+		}
+		close(fd);
+	}
+}
+
 int exec_cmd(cmd * c)
 {
-	int ** tube;//peut-etre a mettre ailleurs
+	int ** tube=NULL;
 	unsigned int i=0;
 
 	if (c->nb_membres==0)
 		return -1;
-	//allocation d'un tableau de ptrs --> a revoir, pas necessaire si pas de pipe
-	tube=(int **)malloc(sizeof(int*)*c->nb_membres-1);
-	if(tube==NULL)
+	
+	if (c->nb_membres>1)
 	{
-		perror("allocation raté // tube");
-		exit(EXIT_FAILURE);
+		tube=(int **)malloc(sizeof(int*)*c->nb_membres-1);
+		if(tube==NULL)
+		{
+			perror("allocation raté // tube");
+			exit(EXIT_FAILURE);
+		}
 	}
-
 	if ((strcmp(c->cmd_initial,"exit"))==0)
 		exit(0);
 	if (c->nb_membres==0)
@@ -37,107 +92,68 @@ int exec_cmd(cmd * c)
 		//quand i sera à 3, on ne fait plus le pipe
 		if (i<c->nb_membres && c->nb_membres>1)
 		{
+			//allocation des tubes
 			tube[i-1]=(int *)malloc(2*sizeof(int));
 			if(tube[i-1]==NULL)
 			{
 				perror("allocation raté // tube[i]");
 				exit(EXIT_FAILURE);
 			}
-			pipe(tube[i-1]);
 
+			pipe(tube[i-1]);
 		}
 
 		pid = fork();
 		//code du processus fils
 		if(pid == 0)
 		{
+			//redirections
 			if(c->redirect[i-1][STDIN]!=NULL)
-			{
-				int fd;
-				fd=open(c->redirect[i-1][STDIN], O_RDONLY);
-				if(fd==-1)
-					printf("Erreur \n");
-				if(dup2(fd, 0) == -1)
-				{
-					perror("dup2");
-					exit(errno);
-				}
-				close(fd);
-			}
-			//ne passe pas la première fois, code non réalisé + p-e refaire code sans pipe quand il n'y en a pas
-
+				redirection("STDIN", c->redirect[i-1][STDIN], 0); 
 			if(c->redirect[i-1][STDOUT]!=NULL)
 			{
-				int fd2=0;
-				//le fichier crée est utilisable en lecture/ecriture/execution
-				//Le fichier est effacé en entier a son ouverture --> O_TRUNC
-				if(c->type_redirect[i-1][STDOUT]==NRAPPEND)
-				{
-					fd2=open(c->redirect[i-1][STDOUT],O_RDWR|O_TRUNC|O_CREAT, S_IRWXU);
-					if(fd2==-1)
-						printf("Erreur \n");
-				}
-				else if (c->type_redirect[i-1][STDOUT]==RAPPEND)
-				{
-					fd2=open(c->redirect[i-1][STDOUT],O_RDWR| O_APPEND);
-					if(fd2==-1)
-						printf("Erreur \n");
-				}
-
-				if(dup2(fd2, 1) == -1)
-				{
-					perror("dup2");
-					exit(errno);
-				}
-				close(fd2);
+				if (c->type_redirect[i-1][STDOUT]==NRAPPEND)
+					redirection("STDOUT", c->redirect[i-1][STDOUT], 0);
+				else if(c->type_redirect[i-1][STDOUT]==RAPPEND)
+					redirection("STDOUT", c->redirect[i-1][STDOUT], 1);
 			}
 			if (c->redirect[i-1][STDERR]!=NULL)
 			{
-				int fd3=0;
-				if(c->type_redirect[i-1][STDERR]==NRAPPEND)
-				{
-					fd3=open(c->redirect[i-1][STDERR],O_RDWR|O_TRUNC|O_CREAT, S_IRWXU);
-					if(fd3==-1)
-						printf("Erreur \n");
-				}
-				else if (c->type_redirect[i-1][STDERR]==RAPPEND)
-				{
-					fd3=open(c->redirect[i-1][STDERR],O_RDWR| O_APPEND);
-					if(fd3==-1)
-						printf("Erreur \n");
-				}
-
-				if(dup2(fd3, 2) == -1)
-				{
-					perror("dup2");
-					exit(errno);
-				}
-				close(fd3);
-
+				if (c->type_redirect[i-1][STDERR]==NRAPPEND)
+					redirection("STDERR",c->redirect[i-1][STDERR], 0);
+				else if(c->type_redirect[i-1][STDERR]==RAPPEND)
+					redirection("STDERR", c->redirect[i-1][STDERR], 1);
 			}
+				
+			//tubes		
 			if (c->nb_membres>1)
 			{
+				//ne passe pas la première fois car on ne fait que de l'écriture
 				if (i>1)
 				{
 					close(tube[i-2][1]);
 					dup2(tube[i-2][0], 0);
 					close(tube[i-2][0]);
 				}
-				//ne passe pas la dernière fois, code non réalisé
-				if (i<c->nb_membres)
+				//ne passe pas la dernière fois, on n'écrie plus
+				if (i<c->nb_membres && i>1)
 				{
 					close(tube[i-1][0]);
 					dup2(tube[i-1][1], 1);
 					close(tube[i-1][1]);
 				}
 			}
-			if(c->cmd_args[i-1][0]!=NULL){ // execution locale
+
+			if(c->cmd_args[i-1][0]!=NULL)
+			{ // execution locale
 				if((execvp(c->cmd_args[i-1][0], c->cmd_args[i-1]))==-1)
 				{
 					perror("Commande inconnue \n");
 					exit(errno);
 				}
-			}else{ // cas de connexion distante
+			}
+			else
+			{ // cas de connexion distante
 				int socket = connexionServeur(c->distant[i-1][0], c->distant[i-1][1]);
 				envoieCommande(socket, &(c->cmd_args[i-1][1]));
 			}
@@ -151,18 +167,19 @@ int exec_cmd(cmd * c)
 		}
 
 	}
-	//code du processus pere
 	signal(SIGALRM, alarmHandler);
 
 	//déclenchement de l'alarme
 	alarm(10);
-
+	
+	//attente de la fin des processus fils
 	for (i=1;i<=c->nb_membres;i++)
 		wait(NULL);
 
-	//fin de l'execution du processus fils, on annule l'alarme
+	//fin des processus fils, on annule l'alarme
 	alarm(0);
-	//desallocation
+
+	//desallocation 
 	if(c->nb_membres>1)
 	{
 		for(i=0;i<c->nb_membres-1;i++)
