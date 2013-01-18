@@ -146,7 +146,7 @@ void parse_args(cmd *c){
 			else if( (i==(c->nb_membres-1) && index(cTmp, '>') != NULL) ){
 				redirection = 1;
 			}
-			else if(strstr(cTmp, "s:")!=NULL){
+			else if(j==0 && strstr(cTmp, "s:")!=NULL){
 
 			}
 			else{
