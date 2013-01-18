@@ -1,4 +1,5 @@
 #include "cmd.h"
+#include <fcntl.h>
 
 void stringCopy(char ** dest, const char * src){
 
@@ -209,7 +210,7 @@ void free_args(cmd *c){
 
 
 void parse_redirect(cmd *c){
-	unsigned int i = 0;
+	unsigned int i = 0, redirection=0;
 	char * cTmp=NULL, /* * ptrRedir=NULL,*/ * cTok=NULL;
 
 	//Allocation de c->redirect
@@ -268,9 +269,17 @@ void parse_redirect(cmd *c){
 				stringCopy( &(c->redirect[i][STDIN]), cTmp);
 			}
 			//a revoir ce test car p-e que ce n'est pas que lorsque i==c->nb_membres-1
-			else if( i==c->nb_membres-1 &&  strcmp(cTmp, ">") == 0)
+			else if(i==c->nb_membres-1 && strcmp(cTmp, ">") == 0)
 			{ // test si redirection de la sortie standard
+				//redirection++;				
 				cTmp = strtok(NULL, " ");
+				if (c->redirect[i][STDOUT]!=NULL)
+				{
+					int fd;
+					fd=open(c->redirect[i][STDOUT],O_RDONLY|O_TRUNC|O_CREAT, S_IRWXU);
+					close(fd);
+					
+				}
 				stringCopy( &(c->redirect[i][STDOUT]), cTmp);
 			}
 			else if(strcmp(cTmp,">>")==0)
