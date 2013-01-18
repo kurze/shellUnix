@@ -138,11 +138,13 @@ int exec_cmd(cmd * c)
 					exit(errno);
 				}
 			}else{ // cas de connexion distante
-				if((execvp(c->cmd_args[i-1][1], &(c->cmd_args[i-1][1])))==-1)
-				{
-					perror("Commande inconnue \n");
-					exit(errno);
-				}
+// 				if((execvp(c->cmd_args[i-1][1], &(c->cmd_args[i-1][1])))==-1)
+// 				{
+// 					perror("Commande inconnue \n");
+// 					exit(errno);
+// 				}
+				int socket = connexionServeur(c->distant[i-1][0], c->distant[i-1][1]);
+				envoieCommande(socket, &(c->cmd_args[i-1][1]));
 			}
 			return 0;
 		}
