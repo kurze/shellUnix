@@ -211,7 +211,7 @@ void free_args(cmd *c){
 void parse_redirect(cmd *c){
 	unsigned int i = 0;
 	char * cTmp=NULL, /* * ptrRedir=NULL,*/ * cTok=NULL;
-	
+
 	//Allocation de c->redirect
 	if(c->redirect==NULL){
 		c->redirect = (char ***) malloc(sizeof(char **) * c->nb_membres);
@@ -221,25 +221,25 @@ void parse_redirect(cmd *c){
 		}
 	}
 
-	//Allocation des type_redirect 
+	//Allocation des type_redirect
 	if(c->type_redirect==NULL){
 		c->type_redirect = (int **) malloc(sizeof(int *) * c->nb_membres);
 		if(c->type_redirect==NULL){
 			perror("allocation raté // type_redirect");
 			exit(EXIT_FAILURE);
 		}
-	}	
+	}
 
 	for(i=0; i < c->nb_membres; i++){
 
-		//Allocation de redirect[]		
+		//Allocation de redirect[]
 		c->redirect[i] = (char **) malloc(sizeof(char *) * 3);
 		if(c->redirect[i]==NULL){
 			perror("allocation raté // parse_redirect");
 			exit(EXIT_FAILURE);
 		}
-	
-		//Allocation de type_redirect[]		
+
+		//Allocation de type_redirect[]
 		c->type_redirect[i] = (int *) malloc(sizeof(int) * 3);
 		if(c->type_redirect[i]==NULL){
 			perror("allocation raté // type_direct");
@@ -258,7 +258,7 @@ void parse_redirect(cmd *c){
 
 		stringCopy(&cTok, c->cmd_membres[i]);
 		cTmp = strtok(cTok, " ");
-		
+
 
 		while( cTmp != NULL){
 			//on garde i=0
@@ -289,16 +289,13 @@ void parse_redirect(cmd *c){
 				cTmp = strtok(NULL, " ");
 				stringCopy( &(c->redirect[i][STDERR]), cTmp);
 				c->type_redirect[i][STDERR]=RAPPEND;
-			}			
+			}
 
 			cTmp = strtok(NULL, " ");
 		}
 		free(cTok);
 	}
 }
-
-
-
 
 void aff_redirect(cmd *c){
 	unsigned int numRedirection=0;
@@ -310,11 +307,11 @@ void aff_redirect(cmd *c){
 		printf("\t\t entrée standard : %s\n", c->redirect[numRedirection][STDIN ]);
 		printf("\t\t sortie standard : %s\n", c->redirect[numRedirection][STDOUT]);
 		printf("\t\t sortie erreur   : %s\n", c->redirect[numRedirection][STDERR]);
-		
+
 		printf("\t\t entrée standard : redirection %d \n", c->type_redirect[numRedirection][STDIN ]);
 		printf("\t\t sortie standard : redirection %d \n", c->type_redirect[numRedirection][STDOUT]);
-		printf("\t\t sortie erreur   : redirection %d \n", c->type_redirect[numRedirection][STDERR]);	
-		
+		printf("\t\t sortie erreur   : redirection %d \n", c->type_redirect[numRedirection][STDERR]);
+
 
 		numRedirection++;
 	}
