@@ -1,4 +1,4 @@
-CC=gcc
+CC=clang
 LDFLAGS=-lreadline -lpthread
 EXEC=myshell
 CFLAGS=-Wall -Wextra
