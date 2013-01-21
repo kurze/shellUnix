@@ -30,7 +30,7 @@ void serveur(char * port){
 		taille = sizeof(struct sockaddr_in);
 		fdSocket = accept(idSocket, (struct sockaddr *)(&adrSocket), &taille);
 		// traiter la connexion
-		if(pthread_create(&thread, NULL, (void *)executionCommande, (void *)fdSocket)){
+		if(pthread_create(&thread, NULL, (void *)executionCommandeRecu, (void *)fdSocket)){
 		perror("erreur de création de thread\n");
 		exit(1);
 	}
@@ -72,7 +72,7 @@ void serveur(char * port){
 	*/
 }
 
-void executionCommande(int fdSocket){
+void executionCommandeRecu(int fdSocket){
 	char commande[256];
 
 	cmd * mycmd;

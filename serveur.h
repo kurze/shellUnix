@@ -19,6 +19,6 @@
 #include <unistd.h>
 */
 void serveur(char * port);
-void executionCommande(int fdsocket);
+void executionCommandeRecu(int fdsocket);
 
 #endif
