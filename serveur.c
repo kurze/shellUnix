@@ -85,10 +85,10 @@ void executionCommande(int fdSocket){
 	}
 	printf("%s\n", commande);
 
-	close(0);
-	dup(fdSocket);
-	close(1);
-	dup(fdSocket);
+// 	close(0);
+// 	dup(fdSocket);
+// 	close(1);
+// 	dup(fdSocket);
 
 	executerCommande(commande, mycmd);
 }
