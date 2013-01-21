@@ -1,6 +1,4 @@
 #include "shell_fct.h"
-#include <errno.h>
-#include <fcntl.h>
 
 pid_t pid;
 

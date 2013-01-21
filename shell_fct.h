@@ -5,6 +5,8 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <errno.h>
+#include <fcntl.h>
 #include "cmd.h"
 #include "client.h"
 
