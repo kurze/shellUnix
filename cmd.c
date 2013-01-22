@@ -210,7 +210,7 @@ void free_args(cmd *c){
 
 
 void parse_redirect(cmd *c){
-	unsigned int i = 0, redirection=0;
+	unsigned int i = 0;
 	char * cTmp=NULL, /* * ptrRedir=NULL,*/ * cTok=NULL;
 
 	//Allocation de c->redirect
@@ -277,6 +277,8 @@ void parse_redirect(cmd *c){
 				{
 					int fd;
 					fd=open(c->redirect[i][STDOUT],O_RDONLY|O_TRUNC|O_CREAT, S_IRWXU);
+					if(fd==-1)
+						printf("Erreur \n");
 					close(fd);
 					
 				}
