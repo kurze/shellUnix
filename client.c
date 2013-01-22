@@ -31,6 +31,11 @@ void client(void){
 		strcpy(buf,readlineptr);
 
 		executerCommande(buf, mycmd);
+
+		//on regarde si la chaine est vide ou non, et s'il est nécessaire de l'ajouter à l'historique
+		if (strcmp(buf,""))
+			add_history(buf);
+
 		free(buf);
 		free(readlineptr);
 	}
@@ -51,17 +56,12 @@ void executerCommande(char * commande, cmd * mycmd){
 #endif
 
 	exec_cmd(mycmd);
-	//on regarde si la chaine est vide ou non, et s'il est nécessaire de l'ajouter à l'historique
-	if (strcmp(commande,""))
-		add_history(commande);
 
-	//..........
 	free_distant(mycmd);
 	free_redirect(mycmd);
 	free_args(mycmd);
 	free_membres(mycmd);
 	free(mycmd);
-	//..........
 
 }
 
