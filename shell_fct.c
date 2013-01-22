@@ -174,6 +174,11 @@ int exec_cmd(cmd * c)
 					}
 				}
 				close(0);
+				retour = fcntl(socket, F_SETFL, O_RDONLY);
+				if(retour == -1){
+					perror("erreur changement sur la socket");
+					exit(EXIT_FAILURE);
+				}
 
 				continuation=1;
 				while(continuation){
