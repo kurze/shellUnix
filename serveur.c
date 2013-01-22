@@ -31,9 +31,10 @@ void serveur(char * port){
 		fdSocket = accept(idSocket, (struct sockaddr *)(&adrSocket), &taille);
 		// traiter la connexion
 		if(pthread_create(&thread, NULL, (void *)executionCommandeRecu, (void *)fdSocket)){
-		perror("erreur de création de thread\n");
-		exit(1);
-	}
+			perror("erreur de création de thread\n");
+			exit(EXIT_FAILURE);
+		}
+// 		close(fdSocket);
 	}
 	/*
 	while(strcmp(commande, "fin")){
@@ -81,14 +82,18 @@ void executionCommandeRecu(int fdSocket){
 
 	if(recv(fdSocket, commande, 256, 0) == -1){
 		perror("erreur lors de la réception de la commande");
-		return;
+		exit(EXIT_FAILURE);
 	}
-	printf("%s\n", commande);
+// 	printf("%s\n", commande);
 
 	close(0);
 	dup(fdSocket);
 	close(1);
 	dup(fdSocket);
-
+// 	sleep(2);
 	executerCommande(commande, mycmd);
+// 	sleep(2);
+	close(0);
+	close(1);
+	close(fdSocket);
 }

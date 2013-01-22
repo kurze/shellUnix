@@ -21,13 +21,13 @@ void redirection(char valeur[7], char nomFichier[1024], int type)
 		if(dup2(fd, 0) == -1)
 		{
 			perror("dup2");
-			exit(errno);
+			exit(EXIT_FAILURE);
 		}
 		close(fd);
 	}
 	//meme cas pour stdout et stderr, sauf redirection
 	else if (strcmp(valeur,"STDOUT")==0 || strcmp(valeur,"STDERR")==0)
-	{	
+	{
 		//redirection > ou 2>
 		if(type==0)
 		{
@@ -47,7 +47,7 @@ void redirection(char valeur[7], char nomFichier[1024], int type)
 			if(dup2(fd, 1) == -1)
 			{
 				perror("dup2");
-				exit(errno);
+				exit(EXIT_FAILURE);
 			}
 		}
 		else
@@ -55,7 +55,7 @@ void redirection(char valeur[7], char nomFichier[1024], int type)
 			if(dup2(fd, 2) == -1)
 			{
 				perror("dup2");
-				exit(errno);
+				exit(EXIT_FAILURE);
 			}
 		}
 		close(fd);
@@ -107,7 +107,7 @@ int exec_cmd(cmd * c)
 		{
 			//redirections
 			if(c->redirect[i-1][STDIN]!=NULL)
-				redirection("STDIN", c->redirect[i-1][STDIN], 0); 
+				redirection("STDIN", c->redirect[i-1][STDIN], 0);
 			if(c->redirect[i-1][STDOUT]!=NULL)
 			{
 				if (c->type_redirect[i-1][STDOUT]==NRAPPEND)
@@ -122,8 +122,8 @@ int exec_cmd(cmd * c)
 				else if(c->type_redirect[i-1][STDERR]==RAPPEND)
 					redirection("STDERR", c->redirect[i-1][STDERR], 1);
 			}
-				
-			//tubes		
+
+			//tubes
 			if (c->nb_membres>1)
 			{
 				//ne passe pas la première fois car on ne fait que de l'écriture
@@ -147,7 +147,7 @@ int exec_cmd(cmd * c)
 				if((execvp(c->cmd_args[i-1][0], c->cmd_args[i-1]))==-1)
 				{
 					perror("Commande inconnue \n");
-					exit(errno);
+					exit(EXIT_FAILURE);
 				}
 			}
 			else
@@ -177,7 +177,7 @@ int exec_cmd(cmd * c)
 	//fin des processus fils, on annule l'alarme
 	alarm(0);
 
-	//desallocation 
+	//desallocation
 	if(c->nb_membres>1)
 	{
 		for(i=0;i<c->nb_membres-1;i++)
