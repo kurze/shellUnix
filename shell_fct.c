@@ -169,7 +169,7 @@ int exec_cmd(cmd * c)
 					else if(retour != -1){
 						continuation = 0;
 					}else{
-						perror("erreur de lecture socket");
+						perror("erreur de lecture buffer");
 						exit(EXIT_FAILURE);
 					}
 				}
