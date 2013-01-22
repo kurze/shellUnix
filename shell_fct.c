@@ -66,10 +66,14 @@ int exec_cmd(cmd * c)
 {
 	int ** tube=NULL;
 	unsigned int i=0;
+	int retour;
+	int socket=-1;
+	short continuation; // boleen
+	char buffer[1]="";
 
 	if (c->nb_membres==0)
 		return -1;
-	
+
 	if (c->nb_membres>1)
 	{
 		tube=(int **)malloc(sizeof(int*)*c->nb_membres-1);
@@ -134,7 +138,7 @@ int exec_cmd(cmd * c)
 					close(tube[i-2][0]);
 				}
 				//ne passe pas la dernière fois, on n'écrie plus
-				if (i<c->nb_membres && i>1)
+				if (i<c->nb_membres)
 				{
 					close(tube[i-1][0]);
 					dup2(tube[i-1][1], 1);
@@ -152,8 +156,40 @@ int exec_cmd(cmd * c)
 			}
 			else
 			{ // cas de connexion distante
-				int socket = connexionServeur(c->distant[i-1][0], c->distant[i-1][1]);
+				socket = connexionServeur(c->distant[i-1][0], c->distant[i-1][1]);
 				envoieCommande(socket, &(c->cmd_args[i-1][1]));
+
+
+				continuation=1;
+				while(i>1 && continuation){
+					retour = read(0, (void *)buffer, 1);
+					if(retour != -1 && retour != 0){
+						write(socket, (void *)buffer, 1);
+					}
+					else if(retour != -1){
+						continuation = 0;
+					}else{
+						perror("erreur de lecture socket");
+						exit(EXIT_FAILURE);
+					}
+				}
+				close(0);
+
+				continuation=1;
+				while(continuation){
+					retour = read(socket, (void *)buffer, 1);
+					if(retour != -1 && retour != 0){
+						write(1, (void *)buffer, 1);
+					}
+					else if(retour != -1){
+						continuation = 0;
+					}else{
+						perror("erreur de lecture socket");
+						exit(EXIT_FAILURE);
+					}
+				}
+				close(1);
+				close(socket);
 			}
 			return 0;
 		}
@@ -169,7 +205,7 @@ int exec_cmd(cmd * c)
 
 	//déclenchement de l'alarme
 	alarm(10);
-	
+
 	//attente de la fin des processus fils
 	for (i=1;i<=c->nb_membres;i++)
 		wait(NULL);
