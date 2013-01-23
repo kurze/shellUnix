@@ -4,7 +4,7 @@
 void serveur(char * port){
 
 	struct sockaddr_in adrSocket;
-	pthread_t thread;
+// 	pthread_t thread;
 	int idSocket;
 	int fdSocket;
 	unsigned int taille;
@@ -31,11 +31,17 @@ void serveur(char * port){
 	while(1){
 		fdSocket = accept(idSocket, (struct sockaddr *)(&adrSocket), &taille);
 		// traiter la connexion
-		if(pthread_create(&thread, NULL, (void *)executionCommandeRecu, (void *)fdSocket)){
-			perror("erreur de création de thread\n");
-			exit(EXIT_FAILURE);
+
+// 		if(pthread_create(&thread, NULL, (void *)executionCommandeRecu, (void *)fdSocket)){
+// 			perror("erreur de création de thread\n");
+// 			exit(EXIT_FAILURE);
+// 		}
+
+		if(fork()==0){
+			executionCommandeRecu(fdSocket);
+			exit(0);
 		}
-// 		close(fdSocket);
+		close(fdSocket);
 	}
 }
 
